@@ -169,6 +169,10 @@
 
   .note-history { margin-top:6px; display:flex; justify-content:center; gap:3px; flex-wrap:wrap; min-height:16px; }
   .note-history span { font-size:10px; color:var(--bstxt); padding:2px 4px; background:var(--bg); border-radius:4px; transition:background 0.4s,color 0.4s; }
+  /* PWA 安装提示 */
+  .install-hint { display:none; align-items:center; justify-content:center; gap:6px; margin-top:10px; font-size:11px; color:var(--actxt); opacity:0.7; }
+  .install-hint a { color:var(--actxt); text-decoration:underline; }
+  .install-hint svg { width:14px; height:14px; fill:var(--actxt); }
   .footer { margin-top:12px; text-align:center; font-size:10px; color:var(--bstxt); letter-spacing:1px; transition:color 0.4s; }
 
   @media (max-width:380px) {
@@ -271,6 +275,11 @@
   </div>
 
   <div class="note-history" id="noteHistory"></div>
+  <!-- PWA 安装提示 -->
+  <div class="install-hint" id="installHint">
+    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+    <span>添加到主屏幕，像 App 一样使用</span>
+  </div>
   <div class="footer">🥚 蛋蛋Cissy联合出品</div>
 </div>
 
@@ -327,7 +336,13 @@ class Tuner{
   pRef(){if(!this.ac||this.ac.state==='closed')this.ac=new(window.AudioContext||window.webkitAudioContext)();if(this.pl)return;this.osc=this.ac.createOscillator();this.gn=this.ac.createGain();this.osc.type='sine';this.osc.frequency.value=this.tf;this.gn.gain.value=0.3;this.osc.connect(this.gn);this.gn.connect(this.ac.destination);this.osc.start();this.pl=true;this.rb.classList.add('active');this.rb.textContent='⏹ 停止参考音';}
   sRef(){if(this.osc){try{this.osc.stop()}catch(e){}this.osc=null;}if(this.gn){this.gn.disconnect();this.gn=null;}this.pl=false;this.rb.classList.remove('active');this.rb.textContent='🔊 播放参考音';}
 }
-document.addEventListener('DOMContentLoaded',()=>{new Tuner();});
+document.addEventListener('DOMContentLoaded',()=>{new Tuner();
+  // 注册 Service Worker → PWA 安装支持
+  if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(e=>console.log('SW:',e.message));
+  // 检测是否已安装为 PWA
+  if(!window.navigator.standalone&&!window.matchMedia('(display-mode:standalone)').matches){
+    const h=document.getElementById('installHint');if(h)h.style.display='flex';
+  }});
 </script>
 </body>
 </html>
