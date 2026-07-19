@@ -1,11 +1,13 @@
 // 🥚 琵琶调音器 - Service Worker
 const CACHE = 'pipa-tuner-v1';
 const FILES = [
-  '/apps/pipa-tuner/',
-  '/apps/pipa-tuner/index.html',
-  '/apps/pipa-tuner/manifest.json',
-  '/apps/pipa-tuner/icon.svg',
-  '/apps/pipa-tuner/sw.js'
+  './',
+  './index.html',
+  './manifest.json',
+  './icon.svg',
+  './icon-192.png',
+  './icon-512.png',
+  './sw.js'
 ];
 
 self.addEventListener('install', e => {

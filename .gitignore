@@ -3,3 +3,9 @@
 .env
 .DS_Store
 Thumbs.db
+index-backup-*.html
+launch.html
+package-lock.json
+gen-icons.cjs
+gen_cert.js
+https-server.js

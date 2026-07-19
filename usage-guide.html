@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>琵琶练琴伴侣 · 使用指南</title>
+<style>
+  :root {
+    --bg: #1e1e32;
+    --card: #1a2844;
+    --txt: #eee;
+    --stxt: #aaa;
+    --accent: #2ed573;
+    --actxt: #8ab4f8;
+    --bdr: #334;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+    background: var(--bg);
+    color: var(--txt);
+    padding: 20px 16px 40px;
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--stxt);
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+  .section {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    border: 1px solid var(--bdr);
+  }
+  .section h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--actxt);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 10px 0 5px;
+    color: var(--accent);
+  }
+  .section p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--txt);
+    margin-bottom: 8px;
+  }
+  .section ul {
+    padding-left: 18px;
+    margin-bottom: 8px;
+  }
+  .section li {
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 4px;
+    color: var(--txt);
+  }
+  .section .note {
+    background: rgba(138,180,248,0.1);
+    border-left: 3px solid var(--actxt);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    font-size: 12px;
+    color: var(--stxt);
+    margin: 8px 0;
+  }
+  .section .tip {
+    background: rgba(46,213,115,0.1);
+    border-left: 3px solid var(--accent);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    font-size: 12px;
+    color: var(--stxt);
+    margin: 8px 0;
+  }
+  .tag {
+    display: inline-block;
+    background: var(--actxt);
+    color: #111;
+    font-size: 10px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .tag.green { background: var(--accent); }
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--stxt);
+    margin-top: 20px;
+    letter-spacing: 1px;
+  }
+  .back {
+    display: block;
+    text-align: center;
+    margin: 16px 0;
+  }
+  .back a {
+    color: var(--actxt);
+    font-size: 13px;
+    text-decoration: none;
+    border: 1px solid var(--actxt);
+    padding: 8px 20px;
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+  .back a:hover { background: var(--actxt); color: #111; }
+  hr { border: none; border-top: 1px solid var(--bdr); margin: 12px 0; }
+  kbd {
+    background: #334;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: inherit;
+    border: 1px solid #556;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎵 琵琶练琴伴侣</h1>
+  <p class="subtitle">使用指南 · v2.0</p>
+
+  <div class="back"><a href="/">← 返回应用</a></div>
+
+  <!-- 调音器 -->
+  <div class="section">
+    <h2>🎯 调音器</h2>
+    <p>琵琶标准定弦：<strong>A₂ — D₃ — E₃ — A₃</strong></p>
+
+    <h3>四根弦</h3>
+    <ul>
+      <li><strong>四</strong> 缠弦 — A₂ (110.00 Hz) — 最粗</li>
+      <li><strong>三</strong> 老弦 — D₃ (146.83 Hz)</li>
+      <li><strong>二</strong> 中弦 — E₃ (164.81 Hz)</li>
+      <li><strong>一</strong> 子弦 — A₃ (220.00 Hz) — 最细</li>
+    </ul>
+
+    <h3>使用方法</h3>
+    <ul>
+      <li>点按琴弦按钮（四/三/二/一）选择要调的音</li>
+      <li>点击 <kbd>🔊 播放参考音</kbd> 聆听标准音高</li>
+      <li>点击麦克风图标开始用麦克风实时调音</li>
+      <li>扇形表盘显示音分偏差：<br>
+        <span style="color:var(--accent)">🟢 绿色</span> = 调准 (±3¢以内)<br>
+        <span style="color:#ffa502">🟠 橙色</span> = 偏低（指针向左）<br>
+        <span style="color:#ff4757">🔴 红色</span> = 偏高（指针向右）</li>
+    </ul>
+
+    <div class="note">🔒 麦克风需要 HTTPS 安全连接。如果使用 localhost 或本地 HTTP，可通过 GitHub Pages 链接访问，或使用「播放参考音」手动调音。</div>
+
+    <div class="tip">💡 调音时拨弦要干脆，等余音平稳后再观察指针。尽量在安静环境中使用麦克风调音。</div>
+  </div>
+
+  <!-- 节拍器 -->
+  <div class="section">
+    <h2>🥁 节拍器</h2>
+
+    <h3>BPM（速度）调节</h3>
+    <ul>
+      <li><strong>拖动滑条</strong> — 范围 40-208 BPM</li>
+      <li><strong>刻度小圆点</strong> — 滑条下方的 40/60/80…200 刻度，点击快速跳转</li>
+      <li><strong>＋/－按钮</strong> — 每次增减 1 BPM</li>
+      <li><strong>👆 打拍按钮</strong> — 手指按节奏点击，自动计算 BPM（关闭节拍器时可用）</li>
+    </ul>
+
+    <h3>拍号设置</h3>
+    <ul>
+      <li><strong>每小节拍数</strong> — 1 到 16 拍</li>
+      <li><strong>单位拍</strong> — 可选 1/2/4/8/16 分音符</li>
+    </ul>
+
+    <h3>节拍圆点</h3>
+    <p>每个圆点代表一拍，运行时会逐拍高亮发光。点击圆点可切换模式：</p>
+    <ul>
+      <li><span class="tag">🔵 重音</span> 强拍 — 实心带光泽，声音响亮（1000Hz）</li>
+      <li><span class="tag green">🟢 轻音</span> 弱拍 — 半透明，声音柔和（600Hz）</li>
+      <li><span class="tag" style="background:#555">⚪ 休止</span> 休止 — 空心虚线，静音不发声</li>
+    </ul>
+
+    <h3>启动 / 停止</h3>
+    <ul>
+      <li>点击 <kbd>▶ 启动</kbd> 开始节拍器</li>
+      <li>运行中按钮变为红色 <kbd>■ 停止</kbd></li>
+      <li>停止后自动记录一条练习日志</li>
+    </ul>
+  </div>
+
+  <!-- 预设 -->
+  <div class="section">
+    <h2>📋 预设系统</h2>
+    <p>4 个默认预设涵盖琵琶基本功练习：</p>
+    <ul>
+      <li><strong>🖐️ 轮指练习</strong> — 60 BPM, 4/4 拍 — 轮指颗粒性训练</li>
+      <li><strong>🎯 弹挑基础</strong> — 72 BPM, 2/4 拍 — 弹挑基本功</li>
+      <li><strong>🎸 扫弦节奏</strong> — 88 BPM, 2/4 拍 — 扫弦节奏感</li>
+      <li><strong>⚡ 快速训练</strong> — 132 BPM, 4/4 拍 — 提速练习</li>
+    </ul>
+    <p>每个预设右侧的 <kbd>✎</kbd> 按钮可编辑名称、BPM、拍号和分母。可删除或重置为默认。</p>
+  </div>
+
+  <!-- 跟练模式 -->
+  <div class="section">
+    <h2>📈 跟练模式</h2>
+    <p>适合循序渐进的练习节奏训练。点击「跟练模式」展开设置面板。</p>
+
+    <h3>三种模式</h3>
+    <ul>
+      <li><strong>🚀 阶梯上升</strong> — 从起始 BPM 逐步升速，到目标后保持</li>
+      <li><strong>⛰️ 起伏练习</strong> — 到达目标后自动降速返回起点，循环反复</li>
+      <li><strong>🔥 挑战模式</strong> — 持续升速，直到手动停止</li>
+    </ul>
+
+    <h3>参数设置</h3>
+    <ul>
+      <li><strong>起始 BPM</strong> / <strong>目标 BPM</strong> — 速度范围</li>
+      <li><strong>每次 +</strong> — 每级升速幅度（1-20 BPM）</li>
+      <li><strong>每级小节</strong> — 每个速度等级持续多少小节后升速</li>
+    </ul>
+
+    <div class="tip">💡 推荐：轮指练习设起始 50、目标 100、每次 +2、每级 8 小节，从慢到稳再到快。</div>
+  </div>
+
+  <!-- 练习日志 -->
+  <div class="section">
+    <h2>📊 练习日志</h2>
+    <p>每次停止节拍器都会自动保存一条记录，显示在日志面板中。</p>
+    <ul>
+      <li><strong>总练习数</strong> — 累计练习次数</li>
+      <li><strong>连续天数🔥</strong> — 按日期统计的连续练习天数</li>
+      <li><strong>最高 BPM🏆</strong> — 历史最高速度记录</li>
+      <li><strong>本周次数⏱</strong> — 最近 7 天练习次数</li>
+    </ul>
+    <p>点击 <kbd>▶ 继续练</kbd> 可一键恢复某次练习的 BPM 和拍号设置。</p>
+    <p>日志保存在浏览器本地 (localStorage)，最多 200 条。</p>
+  </div>
+
+  <!-- 配色 -->
+  <div class="section">
+    <h2>🎨 配色主题</h2>
+    <p>顶部可切换三种主题，适配不同使用场景：</p>
+    <ul>
+      <li><strong>🟦 深蓝</strong> — 默认主题，沉稳护眼，适合夜间练琴</li>
+      <li><strong>🪵 木纹</strong> — 暖木色调，温和舒适</li>
+      <li><strong>🟣 紫兰迪</strong> — 低饱和紫色，莫兰迪色系，柔和雅致</li>
+    </ul>
+  </div>
+
+  <!-- 安装 -->
+  <div class="section">
+    <h2>📲 安装到主屏幕</h2>
+    <p>支持 PWA（渐进式 Web 应用），可像原生 App 一样安装使用：</p>
+    <ul>
+      <li><strong>Safari (iPhone/iPad):</strong> 底部分享按钮 →「添加到主屏幕」</li>
+      <li><strong>Chrome (Android):</strong> 菜单 →「添加到主屏幕」</li>
+      <li><strong>桌面 Chrome:</strong> 地址栏右侧安装图标 <kbd>⊕</kbd></li>
+    </ul>
+    <div class="tip">💡 安装后离线也可使用节拍器（调音器仍需网络加载）</div>
+  </div>
+
+  <hr>
+  <div class="section">
+    <h2>📝 版本说明</h2>
+    <p><strong>v2.0</strong> — 正式定稿版</p>
+    <ul>
+      <li>调音器：实时音高检测 + 扇形偏差表盘 + 参考音</li>
+      <li>节拍器：BPM 40-208 / 拍号自由设 / 三态节拍点 / 打拍测速</li>
+      <li>跟练模式：阶梯 / 起伏 / 挑战 三种练习方案</li>
+      <li>预设系统：4 个默认 + 自定义编辑</li>
+      <li>练习日志：自动记录 / 连续天数 / 一键恢复</li>
+      <li>配色主题：深蓝 / 木纹 / 紫兰迪</li>
+      <li>PWA 安装支持</li>
+    </ul>
+  </div>
+
+  <div class="footer">🥚 蛋蛋 & Cissy 联合出品</div>
+  <div class="back"><a href="/">← 返回应用</a></div>
+</div>
+</body>
+</html>

@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>琵琶调音器</title>
+<title>琵琶练琴伴侣</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   :root {
-    --bg: #1a1a2e;
-    --card: #16213e;
-    --cir: #0f3460;
+    --bg: #1e1e32;
+    --card: #1a2844;
+    --cir: #123558;
     --accent: #2ed573;
     --actxt: #8ab4f8;
     --txt: #eee;
@@ -23,21 +23,39 @@
     --high: #ff4757;
     --glow: rgba(46,213,115,0.35);
     --gaugebg: #555;
+    --tab-bg: #111a30;
   }
-  .skin-sunset {
-    --bg: #1e1418;
-    --card: #2e1a20;
-    --cir: #4a2a30;
-    --accent: #ff9f43;
-    --actxt: #fdcb6e;
-    --txt: #f0ddd0;
-    --stxt: #b09080;
-    --bstxt: #706050;
-    --bdr: #5a3a38;
-    --low: #e8a030;
-    --high: #e06050;
-    --glow: rgba(255,159,67,0.3);
-    --gaugebg: #5a3a38;
+  .skin-wood {
+    --bg: #e5dcc8;
+    --card: #c8b498;
+    --cir: #b4a088;
+    --accent: #c49a6c;
+    --actxt: #7a5e3e;
+    --txt: #16120e;
+    --stxt: #4a3c2e;
+    --bstxt: #6a5a48;
+    --bdr: #a8987c;
+    --low: #c49050;
+    --high: #a86058;
+    --glow: rgba(196,154,108,0.35);
+    --gaugebg: #a8987c;
+    --tab-bg: #c8b498;
+  }
+  .skin-morandi {
+    --bg: #e4dce8;
+    --card: #cbbcd9;
+    --cir: #b9aac8;
+    --accent: #9a8aa8;
+    --actxt: #6e5e84;
+    --txt: #14101e;
+    --stxt: #4a3e58;
+    --bstxt: #6a5e7a;
+    --bdr: #aea0bc;
+    --low: #c49050;
+    --high: #a86058;
+    --glow: rgba(154,138,168,0.35);
+    --gaugebg: #aea0bc;
+    --tab-bg: #cbbcd9;
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -47,7 +65,7 @@
     color: var(--txt);
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 12px;
     user-select: none;
@@ -59,61 +77,73 @@
     width: 100%;
     background: var(--card);
     border-radius: 24px;
-    padding: 20px 16px 24px;
+    padding: 16px 16px 24px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     transition: background 0.4s;
   }
-  h1 { text-align:center; font-size:22px; font-weight:600; margin-bottom:1px; letter-spacing:2px; }
-  .subtitle { text-align:center; color:var(--stxt); font-size:12px; margin-bottom:10px; transition:color 0.4s; }
+  h1 { text-align:center; font-size:20px; font-weight:600; letter-spacing:2px; margin-bottom:10px; }
+  .subtitle { text-align:center; color:var(--stxt); font-size:11px; margin-bottom:6px; transition:color 0.4s; }
 
-  /* 配色切换 */
-  /* HTTPS 安全提示 */
+  /* ---- Tabs ---- */
+  .tab-bar {
+    display:flex; gap:0; margin-bottom:10px;
+    background:var(--tab-bg); border-radius:12px; overflow:hidden;
+    transition:background 0.4s;
+  }
+  .tab {
+    flex:1; text-align:center; padding:10px 0; font-size:14px; font-weight:600;
+    color:var(--bstxt); cursor:pointer; transition:all 0.2s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .tab.active { color:var(--txt); background:var(--cir); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+
+  /* ---- HTTPS warn ---- */
   .https-warn {
-    display: none;
-    text-align: center;
-    background: rgba(255, 71, 87, 0.15);
-    border: 1px solid var(--high);
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: var(--high);
-    line-height: 1.5;
+    display:none;
+    text-align:center;
+    background:rgba(255,71,87,0.15);
+    border:1px solid var(--high);
+    border-radius:10px;
+    padding:8px 12px;
+    margin-bottom:8px;
+    font-size:13px;
+    color:var(--high);
+    line-height:1.5;
   }
-  .https-warn .ref-link {
-    color: var(--actxt);
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  .https-warn.show { display: block; }
-  .https-warn strong { color: #ff6b6b; }
+  .https-warn .ref-link { color:var(--actxt); text-decoration:underline; cursor:pointer; }
+  .https-warn.show { display:block; }
+  .https-warn strong { color:#ff6b6b; }
 
+  /* ---- Skin ---- */
   .skin-row {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:8px;
   }
   .skin-dot {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 12px 4px 4px;
-    border-radius: 20px;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 12px;
-    color: var(--stxt);
-    -webkit-tap-highlight-color: transparent;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    padding:4px 12px 4px 4px;
+    border-radius:20px;
+    border:2px solid transparent;
+    cursor:pointer;
+    transition:all 0.2s;
+    font-size:12px;
+    color:var(--stxt);
+    -webkit-tap-highlight-color:transparent;
   }
-  .skin-dot.active { border-color: var(--accent); color: var(--txt); }
+  .skin-dot.active { border-color:var(--accent); color:var(--txt); }
   .skin-dot .dot {
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    flex-shrink: 0;
+    width:20px; height:20px;
+    border-radius:50%;
+    flex-shrink:0;
   }
 
+  /* ======== 调音器 ======== */
   .note-display {
     position:relative; width:160px; height:160px; margin:0 auto 10px;
     border-radius:50%; background:var(--cir);
@@ -135,7 +165,7 @@
   .gauge-cents.high { color:var(--high); }
   .gauge-hint { font-size:11px; color:var(--stxt); margin-top:1px; transition:color 0.4s; }
 
-  .strings { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:4px 0 12px; }
+  .strings { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:4px 0 10px; }
   .string-btn {
     background:var(--cir); border:2px solid transparent; border-radius:12px;
     padding:10px 6px; text-align:center; cursor:pointer; transition:all 0.15s;
@@ -146,7 +176,7 @@
   .string-btn .spitch { font-size:11px; color:var(--stxt); font-family:monospace; transition:color 0.4s; }
   .string-btn.active .spitch { color:var(--actxt); }
 
-  .ref-row { display:flex; gap:6px; margin-bottom:8px; }
+  .ref-row { display:flex; gap:6px; margin-bottom:6px; }
   .ref-btn {
     flex:1; background:var(--cir); border:none; border-radius:10px;
     padding:10px; color:var(--stxt); font-size:13px; cursor:pointer;
@@ -169,11 +199,259 @@
 
   .note-history { margin-top:6px; display:flex; justify-content:center; gap:3px; flex-wrap:wrap; min-height:16px; }
   .note-history span { font-size:10px; color:var(--bstxt); padding:2px 4px; background:var(--bg); border-radius:4px; transition:background 0.4s,color 0.4s; }
-  /* PWA 安装提示 */
-  .install-hint { display:none; align-items:center; justify-content:center; gap:6px; margin-top:10px; font-size:11px; color:var(--actxt); opacity:0.7; }
+
+  /* ======== 节拍器 ======== */
+  .metro-bpm-row {
+    display:flex; align-items:center; gap:10px; margin-bottom:8px;
+  }
+  .metro-bpm-label { font-size:13px; color:var(--stxt); flex-shrink:0; }
+  .metro-bpm-slider { flex:1; -webkit-appearance:none; appearance:none; height:6px; border-radius:3px; background:var(--gaugebg); outline:none; }
+  .metro-bpm-slider::-webkit-slider-thumb { -webkit-appearance:none; width:26px; height:26px; border-radius:50%; background:var(--accent); cursor:pointer; border:2px solid var(--card); box-shadow:0 0 6px var(--glow); }
+  .metro-bpm-slider::-moz-range-thumb { width:26px; height:26px; border-radius:50%; background:var(--accent); cursor:pointer; border:2px solid var(--card); }
+  .metro-bpm-slider::-webkit-slider-runnable-track { height:6px; border-radius:3px; background:var(--gaugebg); }
+  .metro-slider-wrap { position:relative; flex:1; height:28px; display:flex; align-items:center; }
+  .metro-bpm-ticks {
+    position:absolute; left:13px; right:13px;
+    bottom:-6px;
+    display:flex; justify-content:space-between;
+    pointer-events:none;
+  }
+  .metro-bpm-tick {
+    flex:0 0 1px; position:relative;
+    pointer-events:auto; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .metro-bpm-tick::before {
+    content:''; display:block;
+    width:7px; height:7px; border-radius:50%;
+    background:var(--bstxt);
+    transition:background 0.15s, transform 0.15s, box-shadow 0.15s;
+    transform:translateX(-50%);
+  }
+  .metro-bpm-tick.active::before {
+    background:var(--accent);
+    box-shadow:0 0 4px var(--glow);
+    transform:translateX(-50%) scale(1.5);
+  }
+  /* tick-label removed to avoid overlap with BPM display */
+  .metro-bpm-value {
+    font-size:32px; font-weight:700; font-family:"SF Mono","Cascadia Code",monospace;
+    color:var(--txt); min-width:60px; text-align:center;
+  }
+  .metro-bpm-steps {
+    display:flex; gap:4px; flex-shrink:0;
+  }
+  .metro-step-btn {
+    width:34px; height:34px; border-radius:50%; border:1px solid var(--bdr);
+    background:var(--cir); color:var(--txt); font-size:16px; font-weight:600;
+    cursor:pointer; transition:all 0.15s; display:flex; align-items:center; justify-content:center;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .metro-step-btn:active { background:var(--accent); border-color:var(--accent); }
+
+  .metro-time-adj { display:flex; align-items:center; justify-content:center; gap:20px; margin-bottom:10px; padding:8px 0; }
+  .metro-time-col { display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .metro-time-col .lbl { font-size:11px; color:var(--bstxt); }
+  .metro-time-val { font-size:36px; font-weight:700; min-width:40px; text-align:center; font-variant-numeric:tabular-nums; }
+  .metro-time-sep { font-size:32px; color:var(--bstxt); margin-top:22px; }
+  .metro-time-adj-btn { width:32px; height:32px; border-radius:50%; border:1px solid var(--bdr); background:var(--cir); color:var(--txt); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.15s; -webkit-tap-highlight-color:transparent; }
+  .metro-time-adj-btn:active { background:var(--accent); border-color:var(--accent); }
+
+  .metro-beats {
+    display:flex; justify-content:center; gap:6px; margin:10px 0;
+    flex-wrap:wrap; min-height:38px;
+  }
+  .metro-beat-dot {
+    width:34px; height:34px; border-radius:50%;
+    cursor:pointer; position:relative; flex-shrink:0;
+    transition:box-shadow 0.12s ease-out,
+               background 0.08s ease,
+               border 0.08s ease,
+               opacity 0.08s ease;
+    will-change:box-shadow;
+  }
+  .metro-beat-dot.accent {
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.25) 0%, transparent 55%), var(--actxt);
+    border: 2px solid var(--actxt);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .metro-beat-dot.light {
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.12) 0%, transparent 50%), var(--accent);
+    border: 2px solid var(--accent);
+    opacity: 0.55;
+  }
+  .metro-beat-dot.rest {
+    background: transparent;
+    border: 2px dashed var(--bstxt);
+    opacity: 0.35;
+  }
+  /* Active 态：脉冲 glow，不缩放 */
+  .metro-beat-dot.active { z-index:2; }
+  .metro-beat-dot.accent.active {
+    box-shadow: 0 0 0 4px var(--accent), 0 0 22px var(--glow);
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.35) 0%, transparent 50%), var(--actxt);
+  }
+  .metro-beat-dot.light.active {
+    opacity: 1;
+    box-shadow: 0 0 0 3px var(--accent), 0 0 14px var(--glow);
+  }
+  .metro-beat-dot.rest.active {
+    border-style: solid;
+    border-color: var(--bstxt);
+    opacity: 0.65;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
+  }
+
+  .metro-ctl-row {
+    display:flex; gap:10px; margin-bottom:8px;
+  }
+  .metro-start-btn {
+    flex:2; padding:14px 0; border:none; border-radius:14px;
+    font-size:18px; font-weight:700; letter-spacing:2px;
+    background:var(--accent); color:var(--card); cursor:pointer;
+    transition:all 0.15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .metro-start-btn:active { transform:scale(0.96); }
+  .metro-start-btn.running { background:var(--high); color:#fff; }
+  .metro-tap-btn {
+    flex:1; padding:14px 0; border:2px solid var(--bdr); border-radius:14px;
+    background:var(--cir); color:var(--txt); font-size:13px; font-weight:600;
+    cursor:pointer; transition:all 0.15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .metro-tap-btn:active { border-color:var(--accent); }
+  .metro-tap-btn.tapped { background:var(--accent); color:var(--card); border-color:var(--accent); }
+
+  /* 自定义预设 */
+  .metro-preset-row { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:10px; }
+  .metro-preset-wrapper { position:relative; flex:1; min-width:70px; }
+  .metro-preset-btn {
+    width:100%; background:var(--cir); border:1px solid var(--bdr); border-radius:8px;
+    padding:8px 0 6px; text-align:center; cursor:pointer; transition:all 0.15s;
+    color:var(--stxt); font-size:11px; -webkit-tap-highlight-color:transparent;
+  }
+  .metro-preset-btn:active { border-color:var(--actxt); color:var(--actxt); }
+  .metro-preset-btn .pname { font-size:11px; display:block; }
+  .metro-preset-btn .pbpm { font-size:10px; color:var(--bstxt); }
+  .metro-preset-edit {
+    position:absolute; top:-4px; right:-4px; width:16px; height:16px;
+    background:var(--bstxt); border:1px solid var(--bdr); border-radius:50%;
+    color:var(--card); font-size:10px; line-height:16px; text-align:center;
+    cursor:pointer; opacity:0; transition:opacity 0.2s; z-index:2;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .metro-preset-wrapper:hover .metro-preset-edit,
+  .metro-preset-wrapper .metro-preset-edit.show { opacity:1; }
+  .metro-preset-dialog {
+    display:none; position:fixed; top:0; left:0; right:0; bottom:0;
+    background:rgba(0,0,0,0.6); z-index:100;
+    align-items:center; justify-content:center;
+  }
+  .metro-preset-dialog.open { display:flex; }
+  .metro-preset-dialog .box {
+    background:var(--card); border-radius:16px; padding:20px; width:300px;
+    box-shadow:0 8px 40px rgba(0,0,0,0.6);
+  }
+  .metro-preset-dialog .box h3 { font-size:16px; margin-bottom:12px; text-align:center; }
+  .metro-preset-dialog .box .row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .metro-preset-dialog .box .row label { font-size:12px; color:var(--stxt); min-width:40px; }
+  .metro-preset-dialog .box .row input, .metro-preset-dialog .box .row select {
+    flex:1; background:var(--cir); border:1px solid var(--bdr); border-radius:8px;
+    padding:6px 8px; color:var(--txt); font-size:13px; outline:none;
+  }
+  .metro-preset-dialog .box .row input { width:60px; flex:none; }
+  .metro-preset-dialog .box .btns { display:flex; gap:8px; margin-top:14px; }
+  .metro-preset-dialog .box .btns button {
+    flex:1; padding:8px 0; border:none; border-radius:10px;
+    font-size:13px; font-weight:600; cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .metro-preset-dialog .box .btns .cancel { background:var(--cir); color:var(--stxt); }
+  .metro-preset-dialog .box .btns .save { background:var(--accent); color:var(--card); }
+  .metro-preset-dialog .box .btns .delete { background:var(--high); color:#fff; }
+  .metro-preset-btn {
+    flex:1; min-width:70px; background:var(--cir); border:1px solid var(--bdr); border-radius:8px;
+    padding:6px 0; text-align:center; cursor:pointer; transition:all 0.15s;
+    color:var(--stxt); font-size:11px; -webkit-tap-highlight-color:transparent;
+  }
+  .metro-preset-btn:active { border-color:var(--actxt); color:var(--actxt); }
+
+  /* 跟练模式 */
+  .metro-progress-toggle {
+    display:flex; align-items:center; gap:8px; margin-bottom:8px;
+    padding:8px 10px; background:var(--tab-bg); border-radius:10px;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+    transition:background 0.4s;
+  }
+  .metro-progress-toggle .label { font-size:13px; color:var(--stxt); flex:1; }
+  .metro-progress-toggle .label.on { color:var(--accent); }
+  .metro-progress-toggle .arrow { font-size:14px; color:var(--stxt); transition:transform 0.3s; }
+  .metro-progress-toggle .arrow.open { transform:rotate(180deg); }
+  .metro-progress-panel { display:none; margin-bottom:8px; }
+  .metro-progress-panel.open { display:block; }
+  .progress-row { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+  .progress-row label { font-size:12px; color:var(--stxt); min-width:70px; flex-shrink:0; }
+  .progress-row input, .progress-row select {
+    flex:1; background:var(--cir); border:1px solid var(--bdr); border-radius:8px;
+    padding:6px 8px; color:var(--txt); font-size:13px; outline:none;
+  }
+  .progress-row input[type=number] {
+    width:60px; flex:none; text-align:center; font-family:monospace;
+  }
+  .progress-mode-row { display:flex; gap:6px; margin-bottom:6px; }
+  .progress-mode-btn {
+    flex:1; background:var(--cir); border:2px solid transparent; border-radius:8px;
+    padding:6px 0; text-align:center; cursor:pointer; transition:all 0.15s;
+    color:var(--stxt); font-size:12px; -webkit-tap-highlight-color:transparent;
+  }
+  .progress-mode-btn.active { border-color:var(--accent); color:var(--actxt); }
+  .progress-status {
+    font-size:12px; color:var(--actxt); text-align:center; padding:4px; font-family:monospace;
+  }
+
+  /* 日志 */
+  .metro-log-toggle {
+    display:flex; align-items:center; gap:8px; margin-bottom:4px;
+    padding:8px 10px; background:var(--tab-bg); border-radius:10px;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+    transition:background 0.4s;
+  }
+  .metro-log-toggle .label { font-size:13px; color:var(--stxt); flex:1; }
+  .metro-log-toggle .arrow { font-size:14px; color:var(--stxt); transition:transform 0.3s; }
+  .metro-log-toggle .arrow.open { transform:rotate(180deg); }
+  .metro-log-panel { display:none; margin-bottom:8px; }
+  .metro-log-panel.open { display:block; }
+  .metro-log-summary { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px; }
+  .metro-log-stat {
+    flex:1; min-width:70px; background:var(--cir); border-radius:8px;
+    padding:6px 4px; text-align:center;
+  }
+  .metro-log-stat .num { font-size:18px; font-weight:700; color:var(--accent); font-family:monospace; }
+  .metro-log-stat .lbl { font-size:10px; color:var(--stxt); }
+  .metro-log-list { max-height:180px; overflow-y:auto; }
+  .metro-log-item {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:4px 8px; margin-bottom:2px; background:var(--tab-bg); border-radius:6px;
+    font-size:11px; color:var(--stxt);
+  }
+  .metro-log-item .replay {
+    color:var(--actxt); cursor:pointer; font-size:10px; padding:2px 6px; border-radius:4px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .metro-log-item .replay:active { background:var(--cir); color:var(--txt); }
+
+  /* 清空按钮 */
+  .metro-clear-btn {
+    background:transparent; border:1px solid var(--bstxt); border-radius:8px;
+    color:var(--stxt); font-size:10px; padding:4px 10px; cursor:pointer;
+    float:right; -webkit-tap-highlight-color:transparent;
+  }
+
+  .footer { margin-top:12px; text-align:center; font-size:10px; color:var(--bstxt); letter-spacing:1px; transition:color 0.4s; }
+  .install-hint { display:none; align-items:center; justify-content:center; gap:6px; margin-top:8px; font-size:11px; color:var(--actxt); opacity:0.7; }
   .install-hint a { color:var(--actxt); text-decoration:underline; }
   .install-hint svg { width:14px; height:14px; fill:var(--actxt); }
-  .footer { margin-top:12px; text-align:center; font-size:10px; color:var(--bstxt); letter-spacing:1px; transition:color 0.4s; }
 
   @media (max-width:380px) {
     .gauge-wrap { width:250px; height:130px; }
@@ -181,109 +459,248 @@
     .note-name { font-size:52px; }
     .gauge-cents { font-size:22px; }
     .container { padding:14px 12px 18px; }
+    .metro-bpm-value { font-size:28px; min-width:50px; }
+    .metro-beat-dot { width:28px; height:28px; }
   }
 </style>
 </head>
 <body>
 <div class="container" id="container">
-  <h1>🎵 琵琶调音器</h1>
-  <div class="subtitle">Pipa Tuner · A=440Hz</div>
+  <h1>🎵 琵琶练琴伴侣</h1>
 
-  <!-- HTTPS 安全提示 -->
+  <div class="tab-bar">
+    <div class="tab active" data-tab="tuner">🎵 调音</div>
+    <div class="tab" data-tab="metronome">🥁 节拍器</div>
+  </div>
+
+  <!-- HTTPS warning -->
   <div id="httpsWarn" class="https-warn">
     <strong>🔒 需要 HTTPS</strong><br>
     麦克风仅支持安全连接。<br>
-    请使用 <span class="ref-link" onclick="document.getElementById('refBtn').click()">🔊 参考音</span> 手动调音，
-    或通过 <a href="https://cissylin.github.io/pipa-tuner/" target="_blank" style="color:var(--actxt)">GitHub Pages 🔗</a> 访问以获得完整功能。
+    请使用 <span class="ref-link" onclick="document.getElementById('refBtn').click()">🔊 参考音</span> 手动调音，或通过 <a href="https://cissylin.github.io/pipa-tuner/" target="_blank" style="color:var(--actxt)">GitHub Pages 🔗</a> 访问。
   </div>
 
   <!-- 配色 -->
   <div class="skin-row" id="skinRow">
     <div class="skin-dot active" data-skin="">
-      <span class="dot" style="background:linear-gradient(135deg,#16213e,#0f3460)"></span>深蓝
+      <span class="dot" style="background:linear-gradient(135deg,#1e2844,#123558)"></span>深蓝
     </div>
-    <div class="skin-dot" data-skin="sunset">
-      <span class="dot" style="background:linear-gradient(135deg,#2e1a20,#4a2a30)"></span>日出
+    <div class="skin-dot" data-skin="wood">
+      <span class="dot" style="background:linear-gradient(135deg,#c8b498,#b4a088)"></span>木纹
     </div>
-  </div>
-
-  <!-- 音名 -->
-  <div class="note-display" id="noteDisplay">
-    <div class="note-name" id="noteName">—</div>
-    <div class="note-octave" id="noteOctave"></div>
-    <div class="note-freq" id="noteFreq">— Hz</div>
-  </div>
-
-  <!-- 扇形表 -->
-  <div class="gauge-wrap">
-    <svg class="gauge-svg" viewBox="0 0 290 150">
-      <defs>
-        <linearGradient id="gg" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="var(--low)" stop-opacity="0.35"/>
-          <stop offset="30%" stop-color="var(--low)" stop-opacity="0.15"/>
-          <stop offset="42%" stop-color="var(--accent)" stop-opacity="0.12"/>
-          <stop offset="58%" stop-color="var(--accent)" stop-opacity="0.12"/>
-          <stop offset="70%" stop-color="var(--high)" stop-opacity="0.15"/>
-          <stop offset="100%" stop-color="var(--high)" stop-opacity="0.35"/>
-        </linearGradient>
-      </defs>
-      <path d="M25 130 A 120 120 0 0 1 265 130" stroke="var(--gaugebg)" stroke-width="5" stroke-linecap="round" fill="none"/>
-      <path d="M25 130 A 120 120 0 0 1 265 130" stroke="url(#gg)" stroke-width="5" stroke-linecap="round" fill="none"/>
-      <line x1="44" y1="80" x2="47" y2="86" stroke="var(--bstxt)" stroke-width="1.2"/>
-      <text x="44" y="73" text-anchor="middle" fill="var(--bstxt)" font-size="7">-50</text>
-      <line x1="85" y1="52" x2="88" y2="58" stroke="var(--bstxt)" stroke-width="1.2"/>
-      <text x="85" y="45" text-anchor="middle" fill="var(--bstxt)" font-size="7">-25</text>
-      <line x1="145" y1="38" x2="145" y2="46" stroke="var(--accent)" stroke-width="2"/>
-      <text x="145" y="31" text-anchor="middle" fill="var(--accent)" font-size="8" opacity="0.8">0</text>
-      <line x1="205" y1="52" x2="202" y2="58" stroke="var(--bstxt)" stroke-width="1.2"/>
-      <text x="205" y="45" text-anchor="middle" fill="var(--bstxt)" font-size="7">+25</text>
-      <line x1="246" y1="80" x2="243" y2="86" stroke="var(--bstxt)" stroke-width="1.2"/>
-      <text x="246" y="73" text-anchor="middle" fill="var(--bstxt)" font-size="7">+50</text>
-      <g id="needle" transform="rotate(0,145,130)">
-        <line x1="145" y1="130" x2="145" y2="42" stroke="rgba(255,255,255,0.08)" stroke-width="5" stroke-linecap="round"/>
-        <line x1="145" y1="130" x2="145" y2="42" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/>
-        <circle cx="145" cy="42" r="2.5" fill="var(--accent)"/>
-        <circle cx="145" cy="130" r="4" fill="var(--accent)" opacity="0.2"/>
-        <circle cx="145" cy="130" r="2" fill="var(--accent)"/>
-      </g>
-    </svg>
-    <div class="gauge-center">
-      <div class="gauge-cents" id="centsDisplay">—</div>
-      <div class="gauge-hint" id="gaugeHint">弹拨琴弦</div>
+    <div class="skin-dot" data-skin="morandi">
+      <span class="dot" style="background:linear-gradient(135deg,#cbbcd9,#b9aac8)"></span>紫兰迪
     </div>
   </div>
 
-  <!-- 琴弦 -->
-  <div class="strings" id="stringsContainer">
-    <div class="string-btn" data-freq="220.00" data-name="老弦 A3"><span class="sname">🔴 老弦</span><span class="spitch">A3 · 220.00 Hz</span></div>
-    <div class="string-btn active" data-freq="293.66" data-name="缠弦 D4"><span class="sname">🟡 缠弦</span><span class="spitch">D4 · 293.66 Hz</span></div>
-    <div class="string-btn" data-freq="329.63" data-name="中弦 E4"><span class="sname">🟢 中弦</span><span class="spitch">E4 · 329.63 Hz</span></div>
-    <div class="string-btn" data-freq="440.00" data-name="子弦 A4"><span class="sname">🔵 子弦</span><span class="spitch">A4 · 440.00 Hz</span></div>
+  <!-- ====== 调音器内容 ====== -->
+  <div id="tunerContent" class="tab-content active">
+    <!-- 音名 -->
+    <div class="note-display" id="noteDisplay">
+      <div class="note-name" id="noteName">—</div>
+      <div class="note-octave" id="noteOctave"></div>
+      <div class="note-freq" id="noteFreq">— Hz</div>
+    </div>
+
+    <!-- 扇形表 -->
+    <div class="gauge-wrap">
+      <svg class="gauge-svg" viewBox="0 0 290 150">
+        <defs>
+          <linearGradient id="gg" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="var(--low)" stop-opacity="0.35"/>
+            <stop offset="30%" stop-color="var(--low)" stop-opacity="0.15"/>
+            <stop offset="42%" stop-color="var(--accent)" stop-opacity="0.12"/>
+            <stop offset="58%" stop-color="var(--accent)" stop-opacity="0.12"/>
+            <stop offset="70%" stop-color="var(--high)" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="var(--high)" stop-opacity="0.35"/>
+          </linearGradient>
+        </defs>
+        <path d="M25 130 A 120 120 0 0 1 265 130" stroke="var(--gaugebg)" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <path d="M25 130 A 120 120 0 0 1 265 130" stroke="url(#gg)" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <line x1="44" y1="80" x2="47" y2="86" stroke="var(--bstxt)" stroke-width="1.2"/>
+        <text x="44" y="73" text-anchor="middle" fill="var(--bstxt)" font-size="7">-50</text>
+        <line x1="85" y1="52" x2="88" y2="58" stroke="var(--bstxt)" stroke-width="1.2"/>
+        <text x="85" y="45" text-anchor="middle" fill="var(--bstxt)" font-size="7">-25</text>
+        <line x1="145" y1="38" x2="145" y2="46" stroke="var(--accent)" stroke-width="2"/>
+        <text x="145" y="31" text-anchor="middle" fill="var(--accent)" font-size="8" opacity="0.8">0</text>
+        <line x1="205" y1="52" x2="202" y2="58" stroke="var(--bstxt)" stroke-width="1.2"/>
+        <text x="205" y="45" text-anchor="middle" fill="var(--bstxt)" font-size="7">+25</text>
+        <line x1="246" y1="80" x2="243" y2="86" stroke="var(--bstxt)" stroke-width="1.2"/>
+        <text x="246" y="73" text-anchor="middle" fill="var(--bstxt)" font-size="7">+50</text>
+        <g id="needle" transform="rotate(0,145,130)">
+          <line x1="145" y1="130" x2="145" y2="42" stroke="rgba(255,255,255,0.08)" stroke-width="5" stroke-linecap="round"/>
+          <line x1="145" y1="130" x2="145" y2="42" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="145" cy="42" r="2.5" fill="var(--accent)"/>
+          <circle cx="145" cy="130" r="4" fill="var(--accent)" opacity="0.2"/>
+          <circle cx="145" cy="130" r="2" fill="var(--accent)"/>
+        </g>
+      </svg>
+      <div class="gauge-center">
+        <div class="gauge-cents" id="centsDisplay">—</div>
+        <div class="gauge-hint" id="gaugeHint"></div>
+      </div>
+    </div>
+
+    <!-- 琴弦 -->
+    <div class="strings" id="stringsContainer">
+      <div class="string-btn active" data-freq="110.00" data-name="四缠弦 A2"><span class="sname">四 缠弦</span><span class="spitch">A₂ · 110.00 Hz</span></div>
+      <div class="string-btn" data-freq="146.83" data-name="三老弦 D3"><span class="sname">三 老弦</span><span class="spitch">D₃ · 146.83 Hz</span></div>
+      <div class="string-btn" data-freq="164.81" data-name="二中弦 E3"><span class="sname">二 中弦</span><span class="spitch">E₃ · 164.81 Hz</span></div>
+      <div class="string-btn" data-freq="220.00" data-name="一子弦 A3"><span class="sname">一 子弦</span><span class="spitch">A₃ · 220.00 Hz</span></div>
+    </div>
+
+    <!-- 参考音 -->
+    <div class="ref-row">
+      <button class="ref-btn" id="refBtn">🔊 播放参考音</button>
+    </div>
+
+    <!-- 状态 -->
+    <div class="status-bar">
+      <button class="mic-btn" id="micBtn">
+        <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M17 11a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21h2v-3.07A7 7 0 0 0 19 11h-2z"/></svg>
+      </button>
+      <span class="status-text" id="statusText">点击麦克风开始</span>
+    </div>
+
+    <div class="note-history" id="noteHistory"></div>
   </div>
 
-  <!-- 参考音（单个切换） -->
-  <div class="ref-row">
-    <button class="ref-btn" id="refBtn">🔊 播放参考音</button>
+  <!-- ====== 节拍器内容 ====== -->
+  <div id="metronomeContent" class="tab-content">
+    <!-- BPM -->
+    <div class="metro-bpm-row">
+      <span class="metro-bpm-label">BPM</span>
+      <div class="metro-slider-wrap">
+        <input type="range" class="metro-bpm-slider" id="bpmSlider" min="40" max="208" value="80">
+        <div class="metro-bpm-ticks" id="bpmTicks">
+          <div class="metro-bpm-tick" data-bpm="40"></div>
+          <div class="metro-bpm-tick" data-bpm="60"></div>
+          <div class="metro-bpm-tick" data-bpm="80"></div>
+          <div class="metro-bpm-tick" data-bpm="100"></div>
+          <div class="metro-bpm-tick" data-bpm="120"></div>
+          <div class="metro-bpm-tick" data-bpm="140"></div>
+          <div class="metro-bpm-tick" data-bpm="160"></div>
+          <div class="metro-bpm-tick" data-bpm="180"></div>
+          <div class="metro-bpm-tick" data-bpm="200"></div>
+        </div>
+      </div>
+      <div class="metro-bpm-steps">
+        <button class="metro-step-btn" id="bpmDown">−</button>
+        <button class="metro-step-btn" id="bpmUp">+</button>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <span class="metro-bpm-value" id="bpmDisplay">80</span>
+    </div>
+
+
+    <!-- 拍号 -->
+    <div class="metro-time-adj">
+      <div class="metro-time-col">
+        <div class="lbl">每小节拍数</div>
+        <button class="metro-time-adj-btn" id="timeNumUp">▲</button>
+        <span class="metro-time-val" id="timeNum">4</span>
+        <button class="metro-time-adj-btn" id="timeNumDown">▼</button>
+      </div>
+      <span class="metro-time-sep">/</span>
+      <div class="metro-time-col">
+        <div class="lbl">单位拍</div>
+        <button class="metro-time-adj-btn" id="timeDenUp">▲</button>
+        <span class="metro-time-val" id="timeDen">4</span>
+        <button class="metro-time-adj-btn" id="timeDenDown">▼</button>
+      </div>
+    </div>
+
+    <!-- 节拍圆点 -->
+    <div class="metro-beats" id="metroBeats"></div>
+
+    <!-- 控制 -->
+    <div class="metro-ctl-row">
+      <button class="metro-start-btn" id="metroStart">▶ 启动</button>
+      <button class="metro-tap-btn" id="metroTap">👆 打拍</button>
+    </div>
+
+    <!-- 预设（自定义保存） -->
+    <div class="metro-preset-row" id="presetRow"></div>
+
+    <!-- 预设编辑弹窗 -->
+    <div class="metro-preset-dialog" id="presetDialog">
+      <div class="box">
+        <h3>✏️ 编辑预设</h3>
+        <div class="row"><label>名称</label><input type="text" id="presetEditName" placeholder="如：练轮指" maxlength="8"></div>
+        <div class="row">
+          <label>BPM</label><input type="number" id="presetEditBpm" min="40" max="208">
+          <label>拍数</label><input type="number" id="presetEditBeats" value="4" min="1" max="16" style="width:50px">
+          <label>分母</label><input type="number" id="presetEditDen" value="4" min="1" max="16" step="1" style="width:50px">
+        </div>
+        <div class="btns">
+          <button class="save" id="presetSaveBtn">💾 保存</button>
+          <button class="delete" id="presetDeleteBtn">🗑 删除</button>
+          <button class="cancel" id="presetCancelBtn">取消</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 跟练模式 -->
+    <div class="metro-progress-toggle" id="progressToggle">
+      <span class="label" id="progressLabel">📈 跟练模式 · 未启用</span>
+      <span class="arrow" id="progressArrow">▼</span>
+    </div>
+    <div class="metro-progress-panel" id="progressPanel">
+      <div class="progress-mode-row">
+        <div class="progress-mode-btn active" data-mode="up">🚀 阶梯上升</div>
+        <div class="progress-mode-btn" data-mode="pyramid">⛰️ 起伏练习</div>
+        <div class="progress-mode-btn" data-mode="challenge">🔥 挑战模式</div>
+      </div>
+      <div class="progress-row">
+        <label>起始 BPM</label>
+        <input type="number" id="progStart" value="60" min="40" max="200">
+        <label>目标 BPM</label>
+        <input type="number" id="progEnd" value="120" min="41" max="208">
+      </div>
+      <div class="progress-row">
+        <label>每次 +</label>
+        <input type="number" id="progStep" value="2" min="1" max="20">
+        <label>每级小节</label>
+        <input type="number" id="progBars" value="8" min="1" max="99">
+      </div>
+      <div class="progress-status" id="progressStatus">💤 启动节拍器后自动开始</div>
+    </div>
+
+    <!-- 日志 -->
+    <div class="metro-log-toggle" id="logToggle">
+      <span class="label">📊 练习日志</span>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="metro-log-panel" id="logPanel">
+      <div class="metro-log-summary" id="logSummary">
+        <div class="metro-log-stat"><div class="num" id="logTotal">0</div><div class="lbl">总练习</div></div>
+        <div class="metro-log-stat"><div class="num" id="logStreak">0</div><div class="lbl">连续天数🔥</div></div>
+        <div class="metro-log-stat"><div class="num" id="logTop">—</div><div class="lbl">最高 BPM🏆</div></div>
+        <div class="metro-log-stat"><div class="num" id="logWeekMin">0</div><div class="lbl">本周分钟⏱</div></div>
+      </div>
+      <div class="metro-log-list" id="logList">
+        <div style="text-align:center;padding:20px;color:var(--bstxt);font-size:12px">暂无记录</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+        <span style="font-size:10px;color:var(--bstxt)">最多保存 200 条 · localStorage 本地存储</span>
+        <span class="metro-clear-btn" id="logClearBtn">🗑 清空日志</span>
+      </div>
+      <div style="clear:both"></div>
+    </div>
   </div>
 
-  <!-- 状态 -->
-  <div class="status-bar">
-    <button class="mic-btn" id="micBtn">
-      <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M17 11a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21h2v-3.07A7 7 0 0 0 19 11h-2z"/></svg>
-    </button>
-    <span class="status-text" id="statusText">点击麦克风开始</span>
-  </div>
-
-  <div class="note-history" id="noteHistory"></div>
-  <!-- PWA 安装提示 -->
   <div class="install-hint" id="installHint">
     <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
     <span>添加到主屏幕，像 App 一样使用</span>
   </div>
-  <div class="footer">🥚 蛋蛋Cissy联合出品</div>
+  <div class="footer">🥚 蛋蛋Cissy联合出品 · v2.0 · <a href="usage-guide.html" style="color:var(--actxt);text-decoration:none">📖 指南</a></div>
 </div>
 
 <script>
+/* ==========================================================
+   调音器（原有代码保持不动）
+   ========================================================== */
 const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 function f2n(f){if(f<=0)return null;const s=12*Math.log2(f/440),n=Math.round(s),o=4+Math.floor((n+120)/12)-10,i=((n%12)+12)%12,ef=440*Math.pow(2,n/12);return{name:NOTES[i],octave:o,freq:f,targetFreq:ef,cents:Math.round(1200*Math.log2(f/ef)),idx:i};}
 function autoCorr(b,sr){let l=b.length,s=0;for(let i=0;i<l;i++)s+=Math.abs(b[i]);if(s<l*0.001)return-1;let c=new Float32Array(l);for(let g=0;g<l;g++){let s2=0;for(let i=0;i<l-g;i++)s2+=b[i]*b[i+g];c[g]=s2;}let m=1;for(let i=0;i<l;i++)if(c[i]>m)m=c[i];for(let i=0;i<l;i++)c[i]/=m;let mi=0,mv=-Infinity;for(let i=40;i<l;i++){if(c[i]>mv){mv=c[i];mi=i;}}if(mv<0.2||mi<40)return-1;if(mi>0&&mi<l-1){let a=c[mi-1],b=c[mi],c2=c[mi+1],sh=(a-c2)/(2*(a-2*b+c2));if(!isNaN(sh))mi+=sh;}let f=sr/mi;return(f<60||f>1200)?-1:f;}
@@ -297,9 +714,7 @@ class Tuner{
     this.sb=document.querySelectorAll('.string-btn');this.rb=document.getElementById('refBtn');
     this.nh=document.getElementById('noteHistory');this.cd=document.getElementById('centsDisplay');
     this.gh=document.getElementById('gaugeHint');this.ndl=document.getElementById('needle');
-    this.ct=document.getElementById('container');this.sk=document.querySelectorAll('.skin-dot');
     this.notes=[];
-    // 检查安全上下文（HTTPS）
     if(!window.isSecureContext){
       document.getElementById('httpsWarn').classList.add('show');
       this.mb.style.opacity='0.4';this.mb.style.pointerEvents='none';
@@ -309,40 +724,605 @@ class Tuner{
     this.mb.addEventListener('click',()=>{this.ls?this.stop():this.start();});
     this.sb.forEach(b=>{b.addEventListener('click',()=>{this.sb.forEach(x=>x.classList.remove('active'));b.classList.add('active');this.tf=parseFloat(b.dataset.freq);this.tn=b.dataset.name;this.updN(null);})});
     this.rb.addEventListener('click',()=>{this.pl?this.sRef():this.pRef()});
-    this.sk.forEach(s=>{s.addEventListener('click',()=>{this.sk.forEach(x=>x.classList.remove('active'));s.classList.add('active');const skin=s.dataset.skin;this.ct.className='container'+(skin?' skin-'+skin:'');})});
   }
   async start(){try{
+    if(!window.isSecureContext)return;
     this.ac=new(window.AudioContext||window.webkitAudioContext)();
     this.st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
     this.src=this.ac.createMediaStreamSource(this.st);this.an=this.ac.createAnalyser();this.an.fftSize=2048;
     this.src.connect(this.an);this.ls=true;this.mb.classList.add('active');
-    this.stt.textContent='🎙 监听中…';this.stt.className='status-text listening';this.gh.textContent='弹拨琴弦';
+    this.stt.textContent='🎙 监听中…';this.stt.className='status-text listening';this.gh.textContent='';
     this.loop();
   }catch(e){
     let msg;
-    if(e.name==='NotAllowedError'||e.message.includes('permission'))
-      msg='❌ 麦克风权限被拒绝，请在浏览器设置中允许';
-    else if(e.name==='NotFoundError')
-      msg='❌ 未检测到麦克风设备';
-    else if(!window.isSecureContext)
-      msg='🔒 需要 HTTPS 访问才能使用麦克风';
-    else
-      msg='❌ 麦克风不可用: '+e.message;
-    this.stt.textContent=msg;this.stt.className='status-text error';console.error(e);}}
-  stop(){this.ls=false;if(this.rf){cancelAnimationFrame(this.rf);this.rf=null;}if(this.st){this.st.getTracks().forEach(t=>t.stop());this.st=null;}if(this.ac){this.ac.close();this.ac=null;}this.mb.classList.remove('active');this.stt.textContent='点击麦克风开始';this.stt.className='status-text';this.gh.textContent='弹拨琴弦';this.nn.textContent='—';this.no.textContent='';this.nf.textContent='— Hz';this.nd.classList.remove('in-tune');this.cd.textContent='—';this.cd.className='gauge-cents';this.ndl.setAttribute('transform','rotate(0,145,130)');this.sRef();}
+    if(e.name==='NotAllowedError'||e.message.includes('permission'))msg='❌ 麦克风权限被拒绝，请在浏览器设置中允许';
+    else if(e.name==='NotFoundError')msg='❌ 未检测到麦克风设备';
+    else if(!window.isSecureContext)msg='🔒 需要 HTTPS 访问才能使用麦克风';
+    else msg='❌ 麦克风不可用: '+e.message;
+    this.stt.textContent=msg;this.stt.className='status-text error';}}
+  stop(){this.ls=false;if(this.rf){cancelAnimationFrame(this.rf);this.rf=null;}if(this.st){this.st.getTracks().forEach(t=>t.stop());this.st=null;}if(this.ac){this.ac.close();this.ac=null;}this.mb.classList.remove('active');this.stt.textContent='点击麦克风开始';this.stt.className='status-text';this.gh.textContent='';this.nn.textContent='—';this.no.textContent='';this.nf.textContent='— Hz';this.nd.classList.remove('in-tune');this.cd.textContent='—';this.cd.className='gauge-cents';this.ndl.setAttribute('transform','rotate(0,145,130)');this.sRef();}
   loop(){if(!this.ls)return;const b=new Float32Array(this.an.fftSize);this.an.getFloatTimeDomainData(b);const f=autoCorr(b,this.ac.sampleRate);if(f>0){const n=f2n(f);this.updD(n);this.updN(n);}else{this.nn.textContent='…';this.no.textContent='';this.nf.textContent='— Hz';this.nd.classList.remove('in-tune');}this.rf=requestAnimationFrame(()=>this.loop());}
   updD(n){if(!n)return;this.nn.textContent=n.name;this.no.textContent='Octave '+n.octave;this.nf.textContent=n.freq.toFixed(1)+' Hz';this.notes.unshift(n.name+n.octave);if(this.notes.length>12)this.notes.pop();this.nh.innerHTML=this.notes.map(x=>`<span>${x}</span>`).join('');}
   updN(n){if(!n)return;const c=1200*Math.log2(n.freq/this.tf),cl=Math.max(-50,Math.min(50,c));this.ndl.setAttribute('transform',`rotate(${cl},145,130)`);const a=Math.abs(c);let cls;if(a<3){cls='good';this.nd.classList.add('in-tune');this.stt.textContent=`✅ ${this.tn} 调准`;this.stt.className='status-text listening';}else if(c<0){cls='low';this.nd.classList.remove('in-tune');this.stt.textContent=`🔽 偏低 ${Math.round(a)}¢`;this.stt.className='status-text listening';}else{cls='high';this.nd.classList.remove('in-tune');this.stt.textContent=`🔼 偏高 ${Math.round(a)}¢`;this.stt.className='status-text listening';}this.cd.textContent=`${c>0?'+':''}${Math.round(c)}¢`;this.cd.className='gauge-cents '+cls;}
   pRef(){if(!this.ac||this.ac.state==='closed')this.ac=new(window.AudioContext||window.webkitAudioContext)();if(this.pl)return;this.osc=this.ac.createOscillator();this.gn=this.ac.createGain();this.osc.type='sine';this.osc.frequency.value=this.tf;this.gn.gain.value=0.3;this.osc.connect(this.gn);this.gn.connect(this.ac.destination);this.osc.start();this.pl=true;this.rb.classList.add('active');this.rb.textContent='⏹ 停止参考音';}
   sRef(){if(this.osc){try{this.osc.stop()}catch(e){}this.osc=null;}if(this.gn){this.gn.disconnect();this.gn=null;}this.pl=false;this.rb.classList.remove('active');this.rb.textContent='🔊 播放参考音';}
 }
-document.addEventListener('DOMContentLoaded',()=>{new Tuner();
-  // 注册 Service Worker → PWA 安装支持
+
+/* ==========================================================
+   节拍器
+   ========================================================== */
+class Metronome {
+  constructor() {
+    this.ctx = null;
+    this.running = false;
+    this.bpm = 80;
+    this.beats = 4;
+    this.noteType = 4;
+    this.schedulerTimer = null;
+    this.currentBeat = -1;
+    this.nextSchedTime = 0;
+    this.lookahead = 0.1;
+    this.scheduleAhead = 0.3;
+    this.beatModes = [0]; // 0=accent(重音) 1=light(轻) 2=rest(休止)
+
+    // 跟练模式
+    this.progEnabled = false;
+    this.progMode = 'up';
+    this.progStart = 60;
+    this.progEnd = 120;
+    this.progStep = 2;
+    this.progBars = 8;
+    this.progLevel = 0;
+    this.progTotalLevels = 0;
+    this.progBarCount = 0;
+    this.progDir = 1;
+
+    // UI 引用
+    this.slider = document.getElementById('bpmSlider');
+    this.bpmDisplay = document.getElementById('bpmDisplay');
+    this.bpmDown = document.getElementById('bpmDown');
+    this.bpmUp = document.getElementById('bpmUp');
+    this.startBtn = document.getElementById('metroStart');
+    this.tapBtn = document.getElementById('metroTap');
+    this.beatsContainer = document.getElementById('metroBeats');
+    this.progressStatus = document.getElementById('progressStatus');
+    this.progressLabel = document.getElementById('progressLabel');
+
+    // Tap tempo
+    this.tapTimes = [];
+
+    // 注册事件
+    this.slider.addEventListener('input', () => this.setBpm(parseInt(this.slider.value)));
+    this.bpmDown.addEventListener('click', () => this.setBpm(this.bpm - 1));
+    this.bpmUp.addEventListener('click', () => this.setBpm(this.bpm + 1));
+    this.startBtn.addEventListener('click', () => this.toggle());
+    this.tapBtn.addEventListener('click', () => this.tap());
+
+    // BPM 刻度点击（滑条上的圆圆节点）
+    this.updateTickActive();
+    document.querySelectorAll('#bpmTicks .metro-bpm-tick').forEach(tick => {
+      tick.addEventListener('click', () => {
+        const bpm = parseInt(tick.dataset.bpm);
+        if (!isNaN(bpm)) {
+          this.setBpm(bpm);
+          this.updateTickActive();
+        }
+      });
+    });
+    // 滑条变化时也更新节点高亮
+    this.slider.addEventListener('input', () => {
+      this.updateTickActive();
+    });
+
+    // 拍号调节（可自由设的 +/- 控制器）
+    const beatDenominators = [1, 2, 4, 8, 16];
+    this.timeNumEl = document.getElementById('timeNum');
+    this.timeDenEl = document.getElementById('timeDen');
+    document.getElementById('timeNumUp').addEventListener('click', () => {
+      if (this.beats < 16) { this.beats++; this.syncTimeDisplay(); this.buildBeats(); }
+    });
+    document.getElementById('timeNumDown').addEventListener('click', () => {
+      if (this.beats > 1) { this.beats--; this.syncTimeDisplay(); this.buildBeats(); }
+    });
+    document.getElementById('timeDenUp').addEventListener('click', () => {
+      const i = beatDenominators.indexOf(this.noteType);
+      if (i < beatDenominators.length - 1) { this.noteType = beatDenominators[i + 1]; this.syncTimeDisplay(); }
+    });
+    document.getElementById('timeDenDown').addEventListener('click', () => {
+      const i = beatDenominators.indexOf(this.noteType);
+      if (i > 0) { this.noteType = beatDenominators[i - 1]; this.syncTimeDisplay(); }
+    });
+
+    // 预设
+    this.renderPresets();
+    document.getElementById('presetSaveBtn').addEventListener('click', () => this.savePreset());
+    document.getElementById('presetDeleteBtn').addEventListener('click', () => this.deletePreset());
+    document.getElementById('presetCancelBtn').addEventListener('click', () => this.closePresetDialog());
+
+    // 跟练模式
+    document.getElementById('progressToggle').addEventListener('click', () => {
+      this.progEnabled = !this.progEnabled;
+      document.getElementById('progressPanel').classList.toggle('open');
+      document.getElementById('progressArrow').classList.toggle('open');
+      this.progressLabel.textContent = this.progEnabled ? '📈 跟练模式 · 已启用' : '📈 跟练模式 · 未启用';
+      this.progressLabel.classList.toggle('on', this.progEnabled);
+    });
+    document.querySelectorAll('.progress-mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.progress-mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.progMode = btn.dataset.mode;
+      });
+    });
+    document.getElementById('progStart').addEventListener('change', e => this.progStart = parseInt(e.target.value) || 60);
+    document.getElementById('progEnd').addEventListener('change', e => this.progEnd = parseInt(e.target.value) || 120);
+    document.getElementById('progStep').addEventListener('change', e => this.progStep = parseInt(e.target.value) || 2);
+    document.getElementById('progBars').addEventListener('change', e => this.progBars = parseInt(e.target.value) || 8);
+
+    // 日志
+    document.getElementById('logToggle').addEventListener('click', () => {
+      document.getElementById('logPanel').classList.toggle('open');
+      document.getElementById('logToggle').querySelector('.arrow').classList.toggle('open');
+    });
+    document.getElementById('logClearBtn').addEventListener('click', () => {
+      if (confirm('确定清空所有练习日志？此操作不可撤销。')) {
+        localStorage.removeItem('metro-logs');
+        this.renderLog();
+      }
+    });
+
+    this.syncTimeDisplay();
+    this.buildBeats();
+    this.renderLog();
+  }
+
+  setBpm(v) {
+    this.bpm = Math.max(40, Math.min(208, v));
+    this.slider.value = this.bpm;
+    this.bpmDisplay.textContent = this.bpm;
+  }
+
+  syncTimeDisplay() {
+    this.timeNumEl.textContent = this.beats;
+    this.timeDenEl.textContent = this.noteType;
+  }
+
+  updateTickActive() {
+    const current = this.bpm;
+    document.querySelectorAll('#bpmTicks .metro-bpm-tick').forEach(t => {
+      const b = parseInt(t.dataset.bpm);
+      t.classList.toggle('active', Math.abs(b - current) <= 2);
+    });
+  }
+
+  buildBeats() {
+    this.beatsContainer.innerHTML = '';
+    // 重置/扩展 beatModes
+    if (this.beatModes.length > this.beats) this.beatModes.length = this.beats;
+    while (this.beatModes.length < this.beats) this.beatModes.push(1);
+
+    for (let i = 0; i < this.beats; i++) {
+      const dot = document.createElement('div');
+      const mode = this.beatModes[i];
+      const cls = ['accent','light','rest'][mode] || 'light';
+      dot.className = 'metro-beat-dot ' + cls;
+      dot.dataset.idx = i;
+      dot.addEventListener('click', () => this.cycleBeat(i));
+      this.beatsContainer.appendChild(dot);
+    }
+  }
+
+  cycleBeat(idx) {
+    // 循环切换：accent(0) → light(1) → rest(2) → accent(0)
+    this.beatModes[idx] = ((this.beatModes[idx] || 0) + 1) % 3;
+    const dots = this.beatsContainer.querySelectorAll('.metro-beat-dot');
+    const cls = ['accent','light','rest'][this.beatModes[idx]];
+    dots[idx].className = 'metro-beat-dot ' + cls;
+  }
+
+  /* ---------- Audio ---------- */
+  click(mode, time) {
+    if (!this.ctx || mode === 2) return; // rest → no sound
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = mode === 0 ? 1000 : 600;
+    const vol = mode === 0 ? 0.4 : 0.3;
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(vol, time + 0.002);
+    gain.gain.exponentialRampToValueAtTime(0.01, time + (mode === 0 ? 0.08 : 0.06));
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(time);
+    osc.stop(time + (mode === 0 ? 0.1 : 0.08));
+  }
+
+  /* ---------- 调度器 ---------- */
+  scheduler() {
+    if (!this.running) return;
+    while (this.nextSchedTime < this.ctx.currentTime + this.scheduleAhead) {
+      this.scheduleBeat(this.nextSchedTime);
+      this.nextSchedTime += 60 / this.bpm;
+    }
+    this.schedulerTimer = setTimeout(() => this.scheduler(), this.lookahead * 1000);
+  }
+
+  scheduleBeat(time) {
+    this.currentBeat = (this.currentBeat + 1) % this.beats;
+    const mode = this.beatModes[this.currentBeat] !== undefined ? this.beatModes[this.currentBeat] : 1;
+    this.click(mode, time);
+
+    // 跟练模式：每小节计数
+    if (this.progEnabled && this.currentBeat === 0) {
+      this.progBarCount++;
+      this.checkProgressLevel();
+    }
+
+    // 更新 UI（在正确的时间点）
+    const beatIdx = this.currentBeat;
+    const delayMs = Math.max(0, (time - this.ctx.currentTime) * 1000);
+    setTimeout(() => this.updateUI(beatIdx), delayMs);
+  }
+
+  updateUI(beatIdx) {
+    const dots = this.beatsContainer.querySelectorAll('.metro-beat-dot');
+    dots.forEach((d, i) => {
+      d.classList.toggle('active', i === beatIdx);
+    });
+  }
+
+  /* ---------- 跟练逻辑 ---------- */
+  checkProgressLevel() {
+    const barsPerLevel = this.progBars;
+    if (this.progBarCount < barsPerLevel) return;
+
+    this.progBarCount = 0;
+    let nextBpm = this.bpm;
+    const totalLevels = Math.ceil((this.progEnd - this.progStart) / this.progStep) + 1;
+
+    if (this.progMode === 'up') {
+      // 阶梯上升
+      if (this.bpm < this.progEnd) {
+        nextBpm = Math.min(this.bpm + this.progStep, this.progEnd);
+        this.progLevel++;
+      }
+    } else if (this.progMode === 'pyramid') {
+      // 金字塔
+      if (this.progDir === 1) {
+        nextBpm = this.bpm + this.progStep;
+        if (nextBpm >= this.progEnd) {
+          nextBpm = this.progEnd;
+          this.progDir = -1;
+        }
+      } else {
+        nextBpm = this.bpm - this.progStep;
+        if (nextBpm <= this.progStart) {
+          nextBpm = this.progStart;
+          this.progDir = 1;
+        }
+      }
+      this.progLevel++;
+    } else if (this.progMode === 'challenge') {
+      // 挑战模式
+      nextBpm = this.bpm + this.progStep;
+      this.progLevel++;
+    }
+
+    if (nextBpm !== this.bpm) {
+      this.setBpm(nextBpm);
+      this.progressStatus.textContent = `等级 ${this.progLevel}/${totalLevels}  ${this.bpm} BPM · 已升速`;
+    } else {
+      this.progressStatus.textContent = `🏁 已达目标 ${this.bpm} BPM · 保持中`;
+    }
+  }
+
+  /* ---------- 启动/停止 ---------- */
+  toggle() {
+    if (this.running) {
+      this.stop();
+    } else {
+      this.start();
+    }
+  }
+
+  start() {
+    if (this.running) return;
+    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    this.running = true;
+    this.currentBeat = -1;
+    this.nextSchedTime = this.ctx.currentTime + 0.05;
+    this.progLevel = 0;
+    this.progBarCount = 0;
+    this.progDir = 1;
+
+    // 跟练模式初始化
+    if (this.progEnabled) {
+      this.setBpm(this.progStart);
+      this.progressStatus.textContent = `🏁 开始跟练 · ${this.progStart} BPM`;
+    }
+
+    this.startBtn.textContent = '■ 停止';
+    this.startBtn.classList.add('running');
+    this.scheduler();
+  }
+
+  stop() {
+    this.running = false;
+    if (this.schedulerTimer) {
+      clearTimeout(this.schedulerTimer);
+      this.schedulerTimer = null;
+    }
+    this.beatsContainer.querySelectorAll('.metro-beat-dot').forEach(d => {
+      d.classList.remove('active');
+    });
+    this.startBtn.textContent = '▶ 启动';
+    this.startBtn.classList.remove('running');
+
+    // 记录日志
+    this.saveLog();
+  }
+
+  /* ---------- Tap Tempo ---------- */
+  tap() {
+    if (this.running) {
+      this.stop();
+      return;
+    }
+    const now = Date.now();
+    // 超过 2 秒没按则重置
+    if (this.tapTimes.length > 0 && now - this.tapTimes[this.tapTimes.length - 1] > 2000) {
+      this.tapTimes = [];
+    }
+    this.tapTimes.push(now);
+    if (this.tapTimes.length > 5) this.tapTimes.shift();
+
+    // 视觉反馈：圆点闪烁
+    this.tapBtn.classList.add('tapped');
+    clearTimeout(this._tapTimer);
+    this._tapTimer = setTimeout(() => this.tapBtn.classList.remove('tapped'), 150);
+
+    // 显示当前处于打拍模式
+    if (this.tapTimes.length >= 2) {
+      const intervals = [];
+      for (let i = 1; i < this.tapTimes.length; i++) {
+        intervals.push(this.tapTimes[i] - this.tapTimes[i - 1]);
+      }
+      const avg = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+      if (avg > 0) {
+        const bpm = Math.round(60000 / avg);
+        this.setBpm(Math.max(40, Math.min(208, bpm)));
+        // 闪一下 BPM 数值
+        this.bpmDisplay.style.color = 'var(--accent)';
+        setTimeout(() => this.bpmDisplay.style.color = '', 300);
+      }
+    }
+  }
+
+  /* ---------- 日志 ---------- */
+  saveLog() {
+    const logs = this.getLogs();
+    const now = new Date();
+    const entry = {
+      date: now.toISOString().slice(0, 10),
+      time: now.toLocaleTimeString('zh-CN', {hour:'2-digit', minute:'2-digit'}),
+      bpm: this.bpm,
+      beats: this.beats,
+      noteType: this.noteType,
+      mode: this.progEnabled ? this.progMode : 'normal',
+      duration: 0
+    };
+    logs.unshift(entry);
+    if (logs.length > 200) logs.length = 200; // 最多 200 条
+    localStorage.setItem('metro-logs', JSON.stringify(logs));
+    this.renderLog();
+  }
+
+  getLogs() {
+    try { return JSON.parse(localStorage.getItem('metro-logs')) || []; }
+    catch(e) { return []; }
+  }
+
+  renderLog() {
+    const logs = this.getLogs();
+    const list = document.getElementById('logList');
+    document.getElementById('logTotal').textContent = logs.length;
+
+    if (logs.length === 0) {
+      list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--bstxt);font-size:12px">暂无记录，开启节拍器后自动记录</div>';
+      document.getElementById('logStreak').textContent = '0';
+      document.getElementById('logTop').textContent = '—';
+      document.getElementById('logWeekMin').textContent = '0';
+      return;
+    }
+
+    // 连续天数
+    const dates = [...new Set(logs.map(l => l.date))].sort().reverse();
+    let streak = 1;
+    for (let i = 1; i < dates.length; i++) {
+      const d1 = new Date(dates[i-1]);
+      const d2 = new Date(dates[i]);
+      const diff = (d1 - d2) / 86400000;
+      if (Math.abs(diff - 1) < 0.1) streak++;
+      else break;
+    }
+    document.getElementById('logStreak').textContent = streak;
+
+    const topBpm = Math.max(...logs.map(l => l.bpm));
+    document.getElementById('logTop').textContent = topBpm;
+
+    // 本周记录数
+    const thisWeek = logs.filter(l => {
+      const d = new Date(l.date);
+      const now = new Date();
+      const weekAgo = new Date(now);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return d >= weekAgo;
+    });
+    document.getElementById('logWeekMin').textContent = thisWeek.length;
+
+
+
+    // 最近记录（展开全部显示）
+    list.innerHTML = '';
+    logs.forEach((l, i) => {
+      const modeName = ({up:'🚀阶梯',pyramid:'⛰️起伏',challenge:'🔥挑战',normal:'🎵普通'})[l.mode] || l.mode;
+      const beatsLabel = `${l.beats}/${l.noteType || 4}`;
+      const div = document.createElement('div');
+      div.className = 'metro-log-item';
+      div.innerHTML = `<span>${l.date} ${l.time} · ${l.bpm} BPM · ${beatsLabel} · ${modeName}</span><span class="replay" data-idx="${i}">▶ 继续练</span>`;
+      list.appendChild(div);
+    });
+
+    // 绑定 replay
+    list.querySelectorAll('.replay').forEach(el => {
+      el.addEventListener('click', () => {
+        const idx = parseInt(el.dataset.idx);
+        const entry = logs[idx];
+        if (entry) {
+          this.setBpm(entry.bpm);
+          this.beats = entry.beats;
+          this.noteType = entry.noteType || 4;
+          this.syncTimeDisplay();
+          this.buildBeats();
+        }
+      });
+    });
+  }
+
+  /* ---------- 自定义预设 ---------- */
+  getPresets() {
+    try { return JSON.parse(localStorage.getItem('metro-presets')) || this.defaultPresets(); }
+    catch(e) { return this.defaultPresets(); }
+  }
+
+  defaultPresets() {
+    return [
+      { name:'轮指练习', bpm:60, beats:4, noteType:4 },
+      { name:'弹挑基础', bpm:72, beats:2, noteType:4 },
+      { name:'扫弦节奏', bpm:88, beats:2, noteType:4 },
+      { name:'快速训练', bpm:132, beats:4, noteType:4 }
+    ];
+  }
+
+  renderPresets() {
+    const presets = this.getPresets();
+    const row = document.getElementById('presetRow');
+    row.innerHTML = '';
+    presets.forEach((p, idx) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'metro-preset-wrapper';
+      const btn = document.createElement('div');
+      btn.className = 'metro-preset-btn';
+      btn.dataset.bpm = p.bpm;
+      btn.dataset.beats = p.beats;
+      btn.dataset.name = p.name;
+      btn.innerHTML = `<span class="pname">${p.name}</span><span class="pbpm">${p.bpm} BPM</span>`;
+      btn.addEventListener('click', () => {
+        this.setBpm(p.bpm);
+        this.beats = p.beats;
+        this.noteType = p.noteType || 4;
+        this.syncTimeDisplay();
+        this.buildBeats();
+      });
+      const editBtn = document.createElement('div');
+      editBtn.className = 'metro-preset-edit show';
+      editBtn.textContent = '✎';
+      editBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.openPresetDialog(idx);
+      });
+      wrap.appendChild(btn);
+      wrap.appendChild(editBtn);
+      row.appendChild(wrap);
+    });
+  }
+
+  openPresetDialog(idx) {
+    this._editingIdx = idx;
+    const presets = this.getPresets();
+    const p = presets[idx];
+    document.getElementById('presetEditName').value = p.name;
+    document.getElementById('presetEditBpm').value = p.bpm;
+    document.getElementById('presetEditBeats').value = p.beats;
+    const denEl = document.getElementById('presetEditDen');
+    if (denEl) denEl.value = p.noteType || 4;
+    document.getElementById('presetDialog').classList.add('open');
+  }
+
+  closePresetDialog() {
+    document.getElementById('presetDialog').classList.remove('open');
+    this._editingIdx = null;
+  }
+
+  savePreset() {
+    const presets = this.getPresets();
+    const idx = this._editingIdx;
+    if (idx === null) return;
+    presets[idx] = {
+      name: document.getElementById('presetEditName').value.trim() || '练习' + (idx+1),
+      bpm: parseInt(document.getElementById('presetEditBpm').value) || 80,
+      beats: parseInt(document.getElementById('presetEditBeats').value) || 4,
+      noteType: parseInt(document.getElementById('presetEditDen').value) || 4
+    };
+    localStorage.setItem('metro-presets', JSON.stringify(presets));
+    this.renderPresets();
+    this.closePresetDialog();
+  }
+
+  deletePreset() {
+    if (!confirm('删除这个预设？')) return;
+    const presets = this.getPresets();
+    const idx = this._editingIdx;
+    if (idx === null) return;
+    presets.splice(idx, 1);
+    if (presets.length === 0) {
+      // 全删了则恢复默认
+      localStorage.removeItem('metro-presets');
+    } else {
+      localStorage.setItem('metro-presets', JSON.stringify(presets));
+    }
+    this.renderPresets();
+    this.closePresetDialog();
+  }
+}
+
+/* ==========================================================
+   页面初始化
+   ========================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  // 调音器
+  new Tuner();
+
+  // 节拍器
+  const metro = new Metronome();
+  window.__metro = metro;
+
+  // 配色
+  document.querySelectorAll('.skin-dot').forEach(s => {
+    s.addEventListener('click', () => {
+      document.querySelectorAll('.skin-dot').forEach(x => x.classList.remove('active'));
+      s.classList.add('active');
+      const skin = s.dataset.skin;
+      document.getElementById('container').className = 'container' + (skin ? ' skin-' + skin : '');
+    });
+  });
+
+  // Tab 切换
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab + 'Content').classList.add('active');
+    });
+  });
+
+  // PWA
   if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(e=>console.log('SW:',e.message));
-  // 检测是否已安装为 PWA
   if(!window.navigator.standalone&&!window.matchMedia('(display-mode:standalone)').matches){
     const h=document.getElementById('installHint');if(h)h.style.display='flex';
-  }});
+  }
+});
 </script>
 </body>
 </html>
