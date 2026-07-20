@@ -9,3 +9,5 @@ package-lock.json
 gen-icons.cjs
 gen_cert.js
 https-server.js
+
+*.bak

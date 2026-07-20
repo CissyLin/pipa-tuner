@@ -81,8 +81,11 @@
     box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     transition: background 0.4s;
   }
-  h1 { text-align:center; font-size:20px; font-weight:600; letter-spacing:2px; margin-bottom:10px; }
-  .subtitle { text-align:center; color:var(--stxt); font-size:11px; margin-bottom:6px; transition:color 0.4s; }
+  .header-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:4px; }
+  h1 { font-size:20px; font-weight:600; letter-spacing:2px; }
+  .guide-link { font-size:12px; color:var(--actxt); text-decoration:none; padding:3px 10px; border-radius:8px; background:var(--cir); transition:all 0.15s; white-space:nowrap; }
+  .guide-link:hover { background:var(--accent); color:var(--card); }
+  .subtitle { text-align:center; color:var(--stxt); font-size:12px; margin-bottom:6px; transition:color 0.4s; }
 
   /* ---- Tabs ---- */
   .tab-bar {
@@ -91,7 +94,7 @@
     transition:background 0.4s;
   }
   .tab {
-    flex:1; text-align:center; padding:10px 0; font-size:14px; font-weight:600;
+    flex:1; text-align:center; padding:10px 0; font-size:13px; font-weight:600;
     color:var(--bstxt); cursor:pointer; transition:all 0.2s;
     -webkit-tap-highlight-color:transparent;
   }
@@ -99,22 +102,32 @@
   .tab-content { display:none; }
   .tab-content.active { display:block; }
 
-  /* ---- HTTPS warn ---- */
-  .https-warn {
+  /* ---- HTTPS 提示条（可关闭） ---- */
+  .https-toast {
     display:none;
-    text-align:center;
-    background:rgba(255,71,87,0.15);
-    border:1px solid var(--high);
+    position:relative;
+    background:rgba(255,71,87,0.12);
+    border:1px solid rgba(255,71,87,0.3);
     border-radius:10px;
-    padding:8px 12px;
+    padding:10px 36px 10px 12px;
     margin-bottom:8px;
-    font-size:13px;
+    font-size:12px;
     color:var(--high);
     line-height:1.5;
   }
-  .https-warn .ref-link { color:var(--actxt); text-decoration:underline; cursor:pointer; }
-  .https-warn.show { display:block; }
-  .https-warn strong { color:#ff6b6b; }
+  .https-toast.show { display:block; }
+  .https-toast-close {
+    position:absolute; top:6px; right:8px;
+    width:22px; height:22px;
+    border:none; background:transparent;
+    color:var(--high); font-size:16px; line-height:22px;
+    text-align:center; cursor:pointer; border-radius:50%;
+    opacity:0.6; transition:opacity 0.15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .https-toast-close:hover,
+  .https-toast-close:active { opacity:1; background:rgba(255,71,87,0.2); }
+  .https-toast .ref-link { color:var(--actxt); text-decoration:underline; cursor:pointer; }
 
   /* ---- Skin ---- */
   .skin-row {
@@ -172,8 +185,8 @@
     color:var(--stxt); font-size:13px; -webkit-tap-highlight-color:transparent;
   }
   .string-btn.active { border-color:var(--accent); color:var(--txt); background:var(--cir); }
-  .string-btn .sname { font-size:16px; font-weight:600; display:block; margin-bottom:1px; }
-  .string-btn .spitch { font-size:11px; color:var(--stxt); font-family:monospace; transition:color 0.4s; }
+  .string-btn .sname { font-size:14px; font-weight:600; display:block; margin-bottom:1px; }
+  .string-btn .spitch { font-size:12px; color:var(--stxt); font-family:monospace; transition:color 0.4s; }
   .string-btn.active .spitch { color:var(--actxt); }
 
   .ref-row { display:flex; gap:6px; margin-bottom:6px; }
@@ -198,7 +211,7 @@
   .status-text.error { color:var(--high); }
 
   .note-history { margin-top:6px; display:flex; justify-content:center; gap:3px; flex-wrap:wrap; min-height:16px; }
-  .note-history span { font-size:10px; color:var(--bstxt); padding:2px 4px; background:var(--bg); border-radius:4px; transition:background 0.4s,color 0.4s; }
+  .note-history span { font-size:11px; color:var(--bstxt); padding:2px 4px; background:var(--bg); border-radius:4px; transition:background 0.4s,color 0.4s; }
 
   /* ======== 节拍器 ======== */
   .metro-bpm-row {
@@ -243,26 +256,26 @@
   }
   .metro-step-btn {
     width:34px; height:34px; border-radius:50%; border:1px solid var(--bdr);
-    background:var(--cir); color:var(--txt); font-size:16px; font-weight:600;
+    background:var(--cir); color:var(--txt); font-size:14px; font-weight:600;
     cursor:pointer; transition:all 0.15s; display:flex; align-items:center; justify-content:center;
     -webkit-tap-highlight-color:transparent;
   }
   .metro-step-btn:active { background:var(--accent); border-color:var(--accent); }
 
-  .metro-time-adj { display:flex; align-items:center; justify-content:center; gap:20px; margin-bottom:10px; padding:8px 0; }
-  .metro-time-col { display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .metro-time-adj { display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:6px; padding:4px 0; }
+  .metro-time-col { display:flex; flex-direction:column; align-items:center; gap:2px; }
   .metro-time-col .lbl { font-size:11px; color:var(--bstxt); }
-  .metro-time-val { font-size:36px; font-weight:700; min-width:40px; text-align:center; font-variant-numeric:tabular-nums; }
-  .metro-time-sep { font-size:32px; color:var(--bstxt); margin-top:22px; }
-  .metro-time-adj-btn { width:32px; height:32px; border-radius:50%; border:1px solid var(--bdr); background:var(--cir); color:var(--txt); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.15s; -webkit-tap-highlight-color:transparent; }
+  .metro-time-val { font-size:22px; font-weight:700; min-width:30px; text-align:center; font-variant-numeric:tabular-nums; }
+  .metro-time-sep { font-size:20px; color:var(--bstxt); margin-top:14px; }
+  .metro-time-adj-btn { width:26px; height:26px; border-radius:50%; border:1px solid var(--bdr); background:var(--cir); color:var(--txt); font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.15s; -webkit-tap-highlight-color:transparent; }
   .metro-time-adj-btn:active { background:var(--accent); border-color:var(--accent); }
 
   .metro-beats {
-    display:flex; justify-content:center; gap:6px; margin:10px 0;
-    flex-wrap:wrap; min-height:38px;
+    display:flex; justify-content:center; gap:8px; margin:8px 0;
+    flex-wrap:wrap; min-height:44px;
   }
   .metro-beat-dot {
-    width:34px; height:34px; border-radius:50%;
+    width:44px; height:44px; border-radius:50%;
     cursor:pointer; position:relative; flex-shrink:0;
     transition:box-shadow 0.12s ease-out,
                background 0.08s ease,
@@ -303,7 +316,7 @@
   }
 
   .metro-ctl-row {
-    display:flex; gap:10px; margin-bottom:8px;
+    display:flex; gap:6px; margin-bottom:6px;
   }
   .metro-start-btn {
     flex:2; padding:14px 0; border:none; border-radius:14px;
@@ -314,14 +327,35 @@
   }
   .metro-start-btn:active { transform:scale(0.96); }
   .metro-start-btn.running { background:var(--high); color:#fff; }
-  .metro-tap-btn {
+  .metro-ctl-btn {
     flex:1; padding:14px 0; border:2px solid var(--bdr); border-radius:14px;
     background:var(--cir); color:var(--txt); font-size:13px; font-weight:600;
-    cursor:pointer; transition:all 0.15s;
+    cursor:pointer; transition:all 0.15s; text-align:center;
     -webkit-tap-highlight-color:transparent;
   }
-  .metro-tap-btn:active { border-color:var(--accent); }
-  .metro-tap-btn.tapped { background:var(--accent); color:var(--card); border-color:var(--accent); }
+  .metro-ctl-btn:active { border-color:var(--accent); color:var(--actxt); }
+  .metro-ctl-btn.tapped { background:var(--accent); color:var(--card); border-color:var(--accent); }
+  .metro-achieve-btn {
+    flex:1; padding:10px 0; border:1px solid var(--bdr); border-radius:10px;
+    background:var(--cir); color:var(--stxt); font-size:12px; font-weight:600;
+    cursor:pointer; transition:all 0.15s; text-align:center;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .metro-achieve-btn:active {
+    border-color:var(--actxt);
+    color:var(--actxt);
+  }
+  .share-install-row {
+    display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:4px;
+  }
+  .share-link-btn {
+    display:inline-flex; align-items:center; gap:4px;
+    font-size:12px; color:var(--actxt); background:var(--cir);
+    border:1px solid var(--bdr); border-radius:8px; padding:4px 10px;
+    cursor:pointer; transition:all 0.15s; white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .share-link-btn:active { border-color:var(--actxt); color:var(--txt); }
 
   /* 自定义预设 */
   .metro-preset-row { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:10px; }
@@ -329,15 +363,15 @@
   .metro-preset-btn {
     width:100%; background:var(--cir); border:1px solid var(--bdr); border-radius:8px;
     padding:8px 0 6px; text-align:center; cursor:pointer; transition:all 0.15s;
-    color:var(--stxt); font-size:11px; -webkit-tap-highlight-color:transparent;
+    color:var(--stxt); font-size:12px; -webkit-tap-highlight-color:transparent;
   }
   .metro-preset-btn:active { border-color:var(--actxt); color:var(--actxt); }
-  .metro-preset-btn .pname { font-size:11px; display:block; }
-  .metro-preset-btn .pbpm { font-size:10px; color:var(--bstxt); }
+  .metro-preset-btn .pname { font-size:12px; display:block; }
+  .metro-preset-btn .pbpm { font-size:11px; color:var(--bstxt); }
   .metro-preset-edit {
     position:absolute; top:-4px; right:-4px; width:16px; height:16px;
     background:var(--bstxt); border:1px solid var(--bdr); border-radius:50%;
-    color:var(--card); font-size:10px; line-height:16px; text-align:center;
+    color:var(--card); font-size:11px; line-height:16px; text-align:center;
     cursor:pointer; opacity:0; transition:opacity 0.2s; z-index:2;
     -webkit-tap-highlight-color:transparent;
   }
@@ -353,7 +387,7 @@
     background:var(--card); border-radius:16px; padding:20px; width:300px;
     box-shadow:0 8px 40px rgba(0,0,0,0.6);
   }
-  .metro-preset-dialog .box h3 { font-size:16px; margin-bottom:12px; text-align:center; }
+  .metro-preset-dialog .box h3 { font-size:14px; font-weight:600; margin-bottom:12px; text-align:center; }
   .metro-preset-dialog .box .row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
   .metro-preset-dialog .box .row label { font-size:12px; color:var(--stxt); min-width:40px; }
   .metro-preset-dialog .box .row input, .metro-preset-dialog .box .row select {
@@ -373,7 +407,7 @@
   .metro-preset-btn {
     flex:1; min-width:70px; background:var(--cir); border:1px solid var(--bdr); border-radius:8px;
     padding:6px 0; text-align:center; cursor:pointer; transition:all 0.15s;
-    color:var(--stxt); font-size:11px; -webkit-tap-highlight-color:transparent;
+    color:var(--stxt); font-size:12px; -webkit-tap-highlight-color:transparent;
   }
   .metro-preset-btn:active { border-color:var(--actxt); color:var(--actxt); }
 
@@ -386,7 +420,7 @@
   }
   .metro-progress-toggle .label { font-size:13px; color:var(--stxt); flex:1; }
   .metro-progress-toggle .label.on { color:var(--accent); }
-  .metro-progress-toggle .arrow { font-size:14px; color:var(--stxt); transition:transform 0.3s; }
+  .metro-progress-toggle .arrow { font-size:12px; color:var(--stxt); transition:transform 0.3s; }
   .metro-progress-toggle .arrow.open { transform:rotate(180deg); }
   .metro-progress-panel { display:none; margin-bottom:8px; }
   .metro-progress-panel.open { display:block; }
@@ -418,7 +452,7 @@
     transition:background 0.4s;
   }
   .metro-log-toggle .label { font-size:13px; color:var(--stxt); flex:1; }
-  .metro-log-toggle .arrow { font-size:14px; color:var(--stxt); transition:transform 0.3s; }
+  .metro-log-toggle .arrow { font-size:12px; color:var(--stxt); transition:transform 0.3s; }
   .metro-log-toggle .arrow.open { transform:rotate(180deg); }
   .metro-log-panel { display:none; margin-bottom:8px; }
   .metro-log-panel.open { display:block; }
@@ -428,7 +462,7 @@
     padding:6px 4px; text-align:center;
   }
   .metro-log-stat .num { font-size:18px; font-weight:700; color:var(--accent); font-family:monospace; }
-  .metro-log-stat .lbl { font-size:10px; color:var(--stxt); }
+  .metro-log-stat .lbl { font-size:11px; color:var(--stxt); }
   .metro-log-list { max-height:180px; overflow-y:auto; }
   .metro-log-item {
     display:flex; justify-content:space-between; align-items:center;
@@ -436,7 +470,7 @@
     font-size:11px; color:var(--stxt);
   }
   .metro-log-item .replay {
-    color:var(--actxt); cursor:pointer; font-size:10px; padding:2px 6px; border-radius:4px;
+    color:var(--actxt); cursor:pointer; font-size:11px; padding:2px 6px; border-radius:4px;
     -webkit-tap-highlight-color:transparent;
   }
   .metro-log-item .replay:active { background:var(--cir); color:var(--txt); }
@@ -444,14 +478,28 @@
   /* 清空按钮 */
   .metro-clear-btn {
     background:transparent; border:1px solid var(--bstxt); border-radius:8px;
-    color:var(--stxt); font-size:10px; padding:4px 10px; cursor:pointer;
+    color:var(--stxt); font-size:11px; padding:4px 10px; cursor:pointer;
     float:right; -webkit-tap-highlight-color:transparent;
   }
 
-  .footer { margin-top:12px; text-align:center; font-size:10px; color:var(--bstxt); letter-spacing:1px; transition:color 0.4s; }
-  .install-hint { display:none; align-items:center; justify-content:center; gap:6px; margin-top:8px; font-size:11px; color:var(--actxt); opacity:0.7; }
-  .install-hint a { color:var(--actxt); text-decoration:underline; }
-  .install-hint svg { width:14px; height:14px; fill:var(--actxt); }
+  /* 分享成就预览弹窗 */
+  .achieve-preview { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:200; align-items:center; justify-content:center; }
+  .achieve-preview.open { display:flex; }
+  .achieve-preview-box { background:var(--card); border-radius:16px; width:320px; max-width:90vw; box-shadow:0 8px 40px rgba(0,0,0,0.6); overflow:hidden; }
+  .achieve-preview-header { text-align:center; font-size:18px; font-weight:700; padding:16px 16px 0; color:var(--accent); }
+  .achieve-preview-body { padding:12px 16px; }
+  .achieve-preview-info { text-align:center; font-size:11px; color:var(--bstxt); padding:0 16px 6px; }
+  .achieve-preview-text { background:var(--bg); border-radius:8px; padding:10px 14px; margin:0 16px 12px; font-size:12px; color:var(--txt); font-family:monospace; line-height:1.6; white-space:pre-wrap; word-break:break-all; transition:background 0.4s; }
+  .achieve-preview-btns { display:flex; gap:8px; padding:0 16px 16px; }
+  .achieve-preview-cancel, .achieve-preview-share { flex:1; padding:10px 0; border:none; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .achieve-preview-cancel { background:var(--cir); color:var(--stxt); }
+  .achieve-preview-share { background:var(--accent); color:var(--card); }
+  .achieve-preview-share:active { transform:scale(0.96); }
+
+  .footer { margin-top:12px; text-align:center; font-size:11px; color:var(--bstxt); letter-spacing:1px; transition:color 0.4s; }
+  .install-hint { display:none; align-items:center; gap:4px; font-size:12px; color:var(--actxt); background:var(--cir); border:1px solid var(--bdr); border-radius:8px; padding:4px 10px; cursor:default; white-space:nowrap; }
+  .install-hint svg { width:14px; height:14px; fill:var(--actxt); flex-shrink:0; }
+  .install-hint.show { display:inline-flex; }
 
   @media (max-width:380px) {
     .gauge-wrap { width:250px; height:130px; }
@@ -460,24 +508,45 @@
     .gauge-cents { font-size:22px; }
     .container { padding:14px 12px 18px; }
     .metro-bpm-value { font-size:28px; min-width:50px; }
-    .metro-beat-dot { width:28px; height:28px; }
+    .metro-beat-dot { width:36px; height:36px; }
+    .metro-time-val { font-size:18px; }
+    .metro-time-sep { font-size:16px; margin-top:12px; }
+    .metro-time-adj-btn { width:22px; height:22px; font-size:11px; }
+    .header-row { flex-wrap:wrap; gap:6px; }
+    .guide-link { font-size:11px; padding:2px 8px; }
+    .share-install-row { flex-wrap:wrap; gap:4px; }
+    .share-link-btn { font-size:11px; padding:3px 8px; }
+    .install-hint { padding:3px 8px; font-size:11px; }
   }
 </style>
 </head>
 <body>
 <div class="container" id="container">
-  <h1>🎵 琵琶练琴伴侣</h1>
+  <div class="header-row">
+    <h1>🎵 琵琶练琴伴侣</h1>
+    <a class="guide-link" href="usage-guide.html">📖 指南</a>
+  </div>
+  <div class="subtitle" style="margin-bottom:6px">
+    调音 &amp; 节拍器 · Pipa Tuner &amp; Metronome
+  </div>
+  <div class="share-install-row">
+    <span class="share-link-btn" id="shareLinkBtn">🔗 分享此页</span>
+    <span class="install-hint" id="installHint">
+      <svg viewBox="0 0 24 24" width="14" height="14"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      添加到主屏幕
+    </span>
+  </div>
 
   <div class="tab-bar">
     <div class="tab active" data-tab="tuner">🎵 调音</div>
     <div class="tab" data-tab="metronome">🥁 节拍器</div>
   </div>
 
-  <!-- HTTPS warning -->
-  <div id="httpsWarn" class="https-warn">
-    <strong>🔒 需要 HTTPS</strong><br>
-    麦克风仅支持安全连接。<br>
-    请使用 <span class="ref-link" onclick="document.getElementById('refBtn').click()">🔊 参考音</span> 手动调音，或通过 <a href="https://cissylin.github.io/pipa-tuner/" target="_blank" style="color:var(--actxt)">GitHub Pages 🔗</a> 访问。
+  <!-- HTTPS 提示条（可关闭） -->
+  <div id="httpsWarn" class="https-toast">
+    <button class="https-toast-close" id="httpsToastClose" aria-label="关闭">✕</button>
+    <div><strong>🔒 需要 HTTPS</strong></div>
+    <div style="margin-top:3px">麦克风仅支持安全连接，请使用 <span class="ref-link" onclick="document.getElementById('refBtn').click()">🔊 参考音</span> 手动调音，或通过 <span class="ref-link" onclick="window.open('https://cissylin.github.io/pipa-tuner/','_blank')">GitHub Pages 🔗</span> 访问。</div>
   </div>
 
   <!-- 配色 -->
@@ -617,7 +686,11 @@
     <!-- 控制 -->
     <div class="metro-ctl-row">
       <button class="metro-start-btn" id="metroStart">▶ 启动</button>
-      <button class="metro-tap-btn" id="metroTap">👆 打拍</button>
+      <button class="metro-ctl-btn" id="metroTap">👆 打拍</button>
+    </div>
+    <div class="metro-ctl-row">
+      <button class="metro-ctl-btn" id="metroReset">🔄 重置</button>
+      <button class="metro-ctl-btn" id="metroShareBtn">🔗 分享节奏</button>
     </div>
 
     <!-- 预设（自定义保存） -->
@@ -679,22 +752,33 @@
         <div class="metro-log-stat"><div class="num" id="logTop">—</div><div class="lbl">最高 BPM🏆</div></div>
         <div class="metro-log-stat"><div class="num" id="logWeekMin">0</div><div class="lbl">本周分钟⏱</div></div>
       </div>
+      <button class="metro-achieve-btn" id="shareAchieveBtn" style="margin-bottom:6px;width:100%">🏅 分享成就</button>
       <div class="metro-log-list" id="logList">
-        <div style="text-align:center;padding:20px;color:var(--bstxt);font-size:12px">暂无记录</div>
+        <div style="text-align:center;padding:20px;color:var(--bstxt);font-size:11px">暂无记录</div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
-        <span style="font-size:10px;color:var(--bstxt)">最多保存 200 条 · localStorage 本地存储</span>
+        <span style="font-size:11px;color:var(--bstxt)">最多保存 200 条 · localStorage 本地存储</span>
         <span class="metro-clear-btn" id="logClearBtn">🗑 清空日志</span>
       </div>
       <div style="clear:both"></div>
     </div>
   </div>
 
-  <div class="install-hint" id="installHint">
-    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-    <span>添加到主屏幕，像 App 一样使用</span>
+  <!-- 分享成就预览弹窗 -->
+  <div class="achieve-preview" id="achievePreview">
+    <div class="achieve-preview-box">
+      <div class="achieve-preview-header">🏅 练习成就</div>
+      <div class="achieve-preview-body" id="achievePreviewBody"></div>
+      <div class="achieve-preview-info">即将分享到以下内容：</div>
+      <div class="achieve-preview-text" id="achievePreviewText"></div>
+      <div class="achieve-preview-btns">
+        <button class="achieve-preview-cancel" id="achievePreviewCancel">取消</button>
+        <button class="achieve-preview-share" id="achievePreviewShare">📤 确认分享</button>
+      </div>
+    </div>
   </div>
-  <div class="footer">🥚 蛋蛋Cissy联合出品 · v2.0 · <a href="usage-guide.html" style="color:var(--actxt);text-decoration:none">📖 指南</a></div>
+
+  <div class="footer">🥚 蛋蛋Cissy联合出品 · v2.0 · <a href="https://github.com/cissylin/pipa-tuner" target="_blank" style="color:var(--actxt);text-decoration:none">📦 GitHub</a></div>
 </div>
 
 <script>
@@ -716,7 +800,9 @@ class Tuner{
     this.gh=document.getElementById('gaugeHint');this.ndl=document.getElementById('needle');
     this.notes=[];
     if(!window.isSecureContext){
-      document.getElementById('httpsWarn').classList.add('show');
+      if(!localStorage.getItem('https-dismissed')) {
+        document.getElementById('httpsWarn').classList.add('show');
+      }
       this.mb.style.opacity='0.4';this.mb.style.pointerEvents='none';
       this.stt.textContent='🔒 请使用 HTTPS 或本地部署访问';
       this.stt.className='status-text error';
@@ -870,6 +956,14 @@ class Metronome {
         this.renderLog();
       }
     });
+
+    // 重置 & 分享
+    document.getElementById('metroReset').addEventListener('click', () => this.resetAll());
+    document.getElementById('metroShareBtn').addEventListener('click', () => this.shareMetronome());
+    document.getElementById('shareAchieveBtn').addEventListener('click', () => this.shareAchievement());
+    document.getElementById('achievePreviewCancel').addEventListener('click', () => this.closeAchievePreview());
+    document.getElementById('achievePreviewShare').addEventListener('click', () => this.confirmShareAchieve());
+    this._pendingShareText = '';
 
     this.syncTimeDisplay();
     this.buildBeats();
@@ -1128,7 +1222,7 @@ class Metronome {
     document.getElementById('logTotal').textContent = logs.length;
 
     if (logs.length === 0) {
-      list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--bstxt);font-size:12px">暂无记录，开启节拍器后自动记录</div>';
+      list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--bstxt);font-size:11px">暂无记录，开启节拍器后自动记录</div>';
       document.getElementById('logStreak').textContent = '0';
       document.getElementById('logTop').textContent = '—';
       document.getElementById('logWeekMin').textContent = '0';
@@ -1284,6 +1378,142 @@ class Metronome {
     this.renderPresets();
     this.closePresetDialog();
   }
+
+  /* ---------- 重置所有设置 ---------- */
+  resetAll() {
+    if (this.running) this.stop();
+    this.setBpm(80);
+    this.beats = 4;
+    this.noteType = 4;
+    this.beatModes = [0];
+    this.syncTimeDisplay();
+    this.buildBeats();
+    this.progEnabled = false;
+    this.progMode = 'up';
+    this.progStart = 60;
+    this.progEnd = 120;
+    this.progStep = 2;
+    this.progBars = 8;
+    this.progLevel = 0;
+    this.progBarCount = 0;
+    this.progDir = 1;
+    this.tapTimes = [];
+    document.getElementById('progressPanel').classList.remove('open');
+    document.getElementById('progressArrow').classList.remove('open');
+    this.progressLabel.textContent = '📈 跟练模式 · 未启用';
+    this.progressLabel.classList.remove('on');
+    this.progressStatus.textContent = '💤 已重置';
+    this.bpmDisplay.style.color = '';
+  }
+
+  /* ---------- 分享节奏（生成带参数链接） ---------- */
+  getShareUrl() {
+    const url = new URL(window.location.href.split('?')[0]);
+    url.searchParams.set('bpm', this.bpm);
+    url.searchParams.set('beats', this.beats);
+    url.searchParams.set('den', this.noteType);
+    return url.toString();
+  }
+
+  shareMetronome() {
+    if (this.running) this.stop();
+    const shareUrl = this.getShareUrl();
+    const text = `🥁 我正在用「琵琶练琴伴侣」练琴！
+BPM: ${this.bpm}
+拍号: ${this.beats}/${this.noteType}
+
+🔗 ${shareUrl}`;
+    if (navigator.share) {
+      navigator.share({ title: '琵琶练琴伴侣', text: text, url: shareUrl })
+        .catch(() => this.copyToClipboard(text));
+    } else {
+      this.copyToClipboard(text);
+    }
+  }
+
+  /* ---------- 分享练习成就 ---------- */
+  shareAchievement() {
+    const logs = this.getLogs();
+    if (logs.length === 0) {
+      alert('还没有练习记录，启动节拍器练习后会自动记录！');
+      return;
+    }
+    const dates = [...new Set(logs.map(l => l.date))].sort().reverse();
+    let streak = 1;
+    for (let i = 1; i < dates.length; i++) {
+      const d1 = new Date(dates[i-1]);
+      const d2 = new Date(dates[i]);
+      if (Math.abs((d1 - d2)/86400000 - 1) < 0.1) streak++;
+      else break;
+    }
+    const topBpm = Math.max(...logs.map(l => l.bpm));
+    const total = logs.length;
+    const last = logs[0];
+    const shareUrl = this.getShareUrl();
+    const text = `🏅 我的琵琶练琴成就！
+📅 总练习: ${total} 次
+🔥 连续练琴: ${streak} 天
+🏆 最高 BPM: ${topBpm}
+🕐 最近一次: ${last.date} ${last.time} · ${last.bpm} BPM
+
+来自「琵琶练琴伴侣」🥚
+🔗 ${shareUrl}`;
+
+    // 弹出预览
+    this._pendingShareText = text;
+    document.getElementById('achievePreviewBody').innerHTML = `
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <div style="flex:1;min-width:60px;background:var(--cir);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--accent)">${total}</div><div style="font-size:11px;color:var(--stxt)">总练习</div></div>
+        <div style="flex:1;min-width:60px;background:var(--cir);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--low)">${streak}</div><div style="font-size:11px;color:var(--stxt)">连续天数🔥</div></div>
+        <div style="flex:1;min-width:60px;background:var(--cir);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--high)">${topBpm}</div><div style="font-size:11px;color:var(--stxt)">最高 BPM🏆</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--bstxt);text-align:center;margin-top:8px">最近练习: ${last.date} ${last.time} · ${last.bpm} BPM</div>
+    `;
+    document.getElementById('achievePreviewText').textContent = text;
+    document.getElementById('achievePreview').classList.add('open');
+  }
+
+  closeAchievePreview() {
+    document.getElementById('achievePreview').classList.remove('open');
+    this._pendingShareText = '';
+  }
+
+  confirmShareAchieve() {
+    const text = this._pendingShareText;
+    document.getElementById('achievePreview').classList.remove('open');
+    this._pendingShareText = '';
+    if (navigator.share) {
+      navigator.share({ title: '琵琶练琴成就', text: text, url: this.getShareUrl() })
+        .catch(() => this.copyToClipboard(text));
+    } else {
+      this.copyToClipboard(text);
+    }
+  }
+
+  /* ---------- 复制到剪贴板 ---------- */
+  copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('✅ 已复制到剪贴板，快去分享吧！');
+      }).catch(() => {
+        this.fallbackCopy(text);
+      });
+    } else {
+      this.fallbackCopy(text);
+    }
+  }
+
+  fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); alert('✅ 已复制到剪贴板，快去分享吧！'); }
+    catch(e) { alert('📋 复制失败，请手动复制以下内容：\n\n' + text); }
+    document.body.removeChild(ta);
+  }
 }
 
 /* ==========================================================
@@ -1296,6 +1526,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // 节拍器
   const metro = new Metronome();
   window.__metro = metro;
+
+  // URL 参数恢复节奏设置
+  (function restoreFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const bpm = parseInt(params.get('bpm'));
+    const beats = parseInt(params.get('beats'));
+    const den = parseInt(params.get('den'));
+    if (bpm >= 40 && bpm <= 208) metro.setBpm(bpm);
+    if (beats >= 1 && beats <= 16) { metro.beats = beats; metro.syncTimeDisplay(); metro.buildBeats(); }
+    if (den && [1,2,4,8,16].indexOf(den) !== -1) { metro.noteType = den; metro.syncTimeDisplay(); }
+    // 如果有参数，默认切到节拍器标签页
+    if (params.has('bpm') || params.has('beats')) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelector('[data-tab="metronome"]').classList.add('active');
+      document.getElementById('metronomeContent').classList.add('active');
+    }
+  })();
 
   // 配色
   document.querySelectorAll('.skin-dot').forEach(s => {
@@ -1317,10 +1565,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // HTTPS 提示条关闭按钮
+  document.getElementById('httpsToastClose').addEventListener('click', () => {
+    document.getElementById('httpsWarn').classList.remove('show');
+    localStorage.setItem('https-dismissed', '1');
+  });
+
+  // 分享链接按钮
+  document.getElementById('shareLinkBtn').addEventListener('click', () => {
+    if (navigator.share) {
+      navigator.share({ title: '琵琶练琴伴侣', url: window.location.href })
+        .catch(() => {});
+    } else {
+      const text = '🎵 琵琶练琴伴侣 — 调音器 & 节拍器';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          alert('✅ 链接已复制到剪贴板！');
+        });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = window.location.href;
+        ta.style.position = 'fixed'; ta.style.left = '-9999px';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy');
+        alert('✅ 链接已复制到剪贴板！');
+        document.body.removeChild(ta);
+      }
+    }
+  });
+
   // PWA
   if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(e=>console.log('SW:',e.message));
   if(!window.navigator.standalone&&!window.matchMedia('(display-mode:standalone)').matches){
-    const h=document.getElementById('installHint');if(h)h.style.display='flex';
+    const h=document.getElementById('installHint');if(h)h.classList.add('show');
   }
 });
 </script>
