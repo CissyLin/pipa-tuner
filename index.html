@@ -262,12 +262,13 @@
   }
   .metro-step-btn:active { background:var(--accent); border-color:var(--accent); }
 
-  .metro-time-adj { display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:6px; padding:4px 0; }
-  .metro-time-col { display:flex; flex-direction:column; align-items:center; gap:2px; }
-  .metro-time-col .lbl { font-size:11px; color:var(--bstxt); }
-  .metro-time-val { font-size:22px; font-weight:700; min-width:30px; text-align:center; font-variant-numeric:tabular-nums; }
-  .metro-time-sep { font-size:20px; color:var(--bstxt); margin-top:14px; }
-  .metro-time-adj-btn { width:26px; height:26px; border-radius:50%; border:1px solid var(--bdr); background:var(--cir); color:var(--txt); font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.15s; -webkit-tap-highlight-color:transparent; }
+  .metro-time-adj { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:6px; padding:4px 0; }
+  .metro-time-label { font-size:13px; color:var(--stxt); flex-shrink:0; }
+  .metro-time-content { display:flex; align-items:center; justify-content:center; gap:18px; }
+  .metro-time-col { display:flex; flex-direction:row; align-items:center; gap:6px; }
+  .metro-time-val { font-size:32px; font-weight:700; min-width:40px; text-align:center; font-variant-numeric:tabular-nums; color:var(--txt); }
+  .metro-time-sep { font-size:28px; color:var(--bstxt); }
+  .metro-time-adj-btn { width:30px; height:30px; border-radius:50%; border:1px solid var(--bdr); background:var(--cir); color:var(--txt); font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.15s; -webkit-tap-highlight-color:transparent; }
   .metro-time-adj-btn:active { background:var(--accent); border-color:var(--accent); }
 
   .metro-beats {
@@ -509,9 +510,9 @@
     .container { padding:14px 12px 18px; }
     .metro-bpm-value { font-size:28px; min-width:50px; }
     .metro-beat-dot { width:36px; height:36px; }
-    .metro-time-val { font-size:18px; }
-    .metro-time-sep { font-size:16px; margin-top:12px; }
-    .metro-time-adj-btn { width:22px; height:22px; font-size:11px; }
+    .metro-time-val { font-size:26px; min-width:32px; }
+    .metro-time-sep { font-size:22px; }
+    .metro-time-adj-btn { width:26px; height:26px; font-size:12px; }
     .header-row { flex-wrap:wrap; gap:6px; }
     .guide-link { font-size:11px; padding:2px 8px; }
     .share-install-row { flex-wrap:wrap; gap:4px; }
@@ -665,18 +666,19 @@
 
     <!-- 拍号 -->
     <div class="metro-time-adj">
-      <div class="metro-time-col">
-        <div class="lbl">每小节拍数</div>
-        <button class="metro-time-adj-btn" id="timeNumUp">▲</button>
-        <span class="metro-time-val" id="timeNum">4</span>
-        <button class="metro-time-adj-btn" id="timeNumDown">▼</button>
-      </div>
-      <span class="metro-time-sep">/</span>
-      <div class="metro-time-col">
-        <div class="lbl">单位拍</div>
-        <button class="metro-time-adj-btn" id="timeDenUp">▲</button>
-        <span class="metro-time-val" id="timeDen">4</span>
-        <button class="metro-time-adj-btn" id="timeDenDown">▼</button>
+      <div class="metro-time-label">拍号</div>
+      <div class="metro-time-content">
+        <div class="metro-time-col">
+          <button class="metro-time-adj-btn" id="timeNumDown">◀</button>
+          <span class="metro-time-val" id="timeNum">4</span>
+          <button class="metro-time-adj-btn" id="timeNumUp">▶</button>
+        </div>
+        <span class="metro-time-sep">/</span>
+        <div class="metro-time-col">
+          <button class="metro-time-adj-btn" id="timeDenDown">◀</button>
+          <span class="metro-time-val" id="timeDen">4</span>
+          <button class="metro-time-adj-btn" id="timeDenUp">▶</button>
+        </div>
       </div>
     </div>
 
